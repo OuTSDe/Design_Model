@@ -44,6 +44,10 @@ Updated 12 Nov 2026.
 - Built (13 Nov, engine 0.3.0): Codex pipeline per room = find-principal (Pinterest) → research-room → find-references (Pinterest) → compose-moodboard → vendor-research → make-blank → render-room; style-references + style-brief for the vocabulary; Library and Vendors pages; autorun.json, resume, retry, Update and restart, console.log. See RUN_NOTES.md.
 - Next: mood board editor (board-*.json layers), node view for renders, real white models from Rhino.
 
+## Mood board = Codex image generation (13 Nov)
+- compose-moodboard uses Codex's image generation (prompts/compose-moodboard.md). Attached as images, in this order: the room's chosen products (products.json asset_id) and other asset-library pieces that fit the style (≤8), vendor products, references (expanded/), principal refs only if nothing else, then ≤2 OuTSDe mood-board examples (layout only). It must show those real pieces. Writes board-NNN.png + board-NNN.json {mode:'generated', palette, pieces[{element, source, asset_id, role}]}.
+- Pipeline order is now research-room → find-references → vendor-research → compose-moodboard → render-room (vendor products before the board). The old code-made collage prompt is kept as prompts/compose-moodboard-collage.md (not used).
+
 ## Server mode (engine 0.5)
 - `Start Design Server.cmd` → dev.mjs --server: builds the UI, engine serves it on 0.0.0.0:4317. Non-local requests need `accessKey` (config.json; generated on first server start) via header x-engine-key or ?k=. Connect screen in the UI stores engine address + key in localStorage. Remote/https (GitHub Pages) → Tailscale `tailscale serve --bg 4317`.
 

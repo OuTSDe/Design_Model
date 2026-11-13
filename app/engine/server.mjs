@@ -152,7 +152,8 @@ function codexCheck() {
 }
 
 // Job types. cwd = where Codex works (its sandbox can write only there); output = the file that proves the job worked.
-const PIPELINE = ['research-room', 'find-references', 'compose-moodboard', 'vendor-research', 'render-room']
+// 13 Nov: vendor products come before the mood board, so the generated board shows the real, priced pieces
+const PIPELINE = ['research-room', 'find-references', 'vendor-research', 'compose-moodboard', 'render-room']
 const JOB_LABEL = { 'research-room': 'Research the room', 'find-references': 'Find references', 'compose-moodboard': 'Make the mood board', 'vendor-research': 'Find vendor products',
   'render-room': 'Render', 'style-references': 'Style references', 'style-brief': 'Style brief and render values', 'find-principal': 'Principal references (Pinterest)', 'make-blank': 'Blank view (Codex)', 'asset-tag': 'Research and tag', 'asset-standardise': 'Standardise images', 'analyse-reference': 'Research the room', ping: 'Test Codex', free: 'Free prompt' }
 const seq = (dir, prefix, ext) => { const n = (fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.startsWith(prefix) && f.endsWith(ext)).length : 0) + 1; return `${prefix}${String(n).padStart(3, '0')}${ext}` }
@@ -213,17 +214,27 @@ function buildJob(type, { projectId, roomId, prompt, output, then, styleId, asse
         v.needs = readText(path.join(d, 'needs.json')); imgs = principal.slice(0, 2).map((i) => ['principal reference (match this)', i.path]); out = 'expanded/references.json'
       }
       if (type === 'compose-moodboard') {
+        // 13 Nov: the board is made by Codex image generation. The real pieces go in as attached images: asset-library
+        // products that fit this room's style first, then the room's references and vendor products, then the OuTSDe examples.
         const refs = readJson(path.join(d, 'expanded', 'references.json'))
         if (!refs?.items?.length && !principal.length) throw new Error('Find references (or add principal references) first.')
-        imgs = images(path.join(sd, 'moodboard-ref')).slice(0, 3).map((i) => ['OuTSDe mood-board example (follow this layout language)', i.path])
         const prods = readJson(path.join(d, 'products.json'), { items: [] }).items || []
-        // the asset library, filtered by this room's theme: only pieces whose style score fits are offered to the board
         const fit = A.forStyle(st.id, { category2: st.category === 2, min: 0.6 }).slice(0, 40)
-        extra = fit.map((a) => { const f = ['std', 'images'].map((k) => ['front', 'face', 'axo', 'swatch', 'seamless', 'lit'].map((sl) => A.imgFile(a._dir, k, sl)).find(Boolean)).find(Boolean); return f ? { from: f, to: `library/${a.id}${path.extname(f)}`, a } : null }).filter(Boolean)
-        v.library = extra.length ? JSON.stringify(extra.map((x) => ({ file: x.to, name: x.a.fields?.name, category: A.node(x.a.category)?.names?.join(' / '), vendor: x.a.vendor_id, price_inr: x.a.fields?.price_inr, price_unit: x.a.fields?.price_unit, score: x.a.ai.styles[st.id], standardised: x.from.includes(`${path.sep}std${path.sep}`) })), null, 1) : '(none yet: the asset library has no pieces tagged for this style)'
-        v.assets = JSON.stringify({ references: (refs?.items || []).map((x) => ({ file: 'expanded/' + x.file, element: x.element, type: x.type, colours: x.colours })),
-          products: prods.filter((x) => x.dir).map((x) => ({ file: path.relative(d, path.join(DIR.vendors, x.dir, x.images?.[0] || '')).split(path.sep).join('/'), name: x.name, vendor: x.vendor, price: x.price_inr })),
-          principal: principal.map((i) => 'principal/' + i.name) }, null, 1)
+        const pick = (a) => ['std', 'images'].map((k) => ['front', 'face', 'axo', 'swatch', 'seamless', 'lit'].map((sl) => A.imgFile(a._dir, k, sl)).find(Boolean)).find(Boolean)
+        // products chosen for this room (vendor research) come before other style-fitting library pieces
+        const chosen = prods.filter((x) => x.asset_id).map((x) => ({ a: A.byId(x.asset_id), element: x.element })).filter((x) => x.a)
+        const lib = [...chosen, ...fit.filter((a) => !chosen.some((c) => c.a.id === a.id)).map((a) => ({ a, element: '' }))].map((x) => ({ ...x, file: pick(x.a) })).filter((x) => x.file).slice(0, 8)
+        const refImgs = (refs?.items || []).filter((x) => x.file && fs.existsSync(path.join(d, 'expanded', x.file))).slice(0, Math.max(3, 12 - lib.length))
+        const old = prods.filter((x) => x.dir && x.images?.[0]).slice(0, 2).map((x) => ({ x, file: path.join(DIR.vendors, x.dir, x.images[0]) })).filter((x) => fs.existsSync(x.file))
+        imgs = [...lib.map((x) => [`asset-library product: ${x.a.fields?.name || x.a.id}${x.element ? ' (' + x.element + ')' : ''}`, x.file]),
+          ...old.map((y) => [`vendor product: ${y.x.name}`, y.file]),
+          ...refImgs.map((x) => [`reference: ${x.element || x.type || 'element'}`, path.join(d, 'expanded', x.file)]),
+          ...(lib.length + refImgs.length ? [] : principal.slice(0, 3).map((i) => ['principal reference', i.path])),
+          ...images(path.join(sd, 'moodboard-ref')).slice(0, 2).map((i) => ['OuTSDe mood-board example (layout language only)', i.path])].slice(0, 16)
+        v.pieces = JSON.stringify([...lib.map((x) => ({ source: path.basename(x.file), asset_id: x.a.id, name: x.a.fields?.name, element: x.element || A.node(x.a.category)?.names?.slice(-1)[0], vendor: x.a.vendor_id, price_inr: x.a.fields?.price_inr, price_unit: x.a.fields?.price_unit, style_score: x.a.ai?.styles?.[st.id] })),
+          ...old.map((y) => ({ source: path.basename(y.file), name: y.x.name, vendor: y.x.vendor, price_inr: y.x.price_inr })),
+          ...refImgs.map((x) => ({ source: x.file, element: x.element, type: x.type, colours: x.colours }))], null, 1)
+        if (!lib.length) v.pieces += '\n(The asset library has no pieces tagged for this style yet, so the board uses the references.)'
         const n = seq(path.join(d, 'moodboard'), 'board-', '.png'); out = 'moodboard/' + n; v.output = out; v.layers = out.replace('.png', '.json')
       }
       if (type === 'vendor-research') {

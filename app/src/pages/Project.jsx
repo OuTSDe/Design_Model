@@ -76,8 +76,8 @@ function Rooms({ p, vocab, jobs, reload, reloadJobs, save }) {
 
 const STEPS = [['research-room', 'Research the room', 'Codex studies the style and the references and lists every element the room needs.'],
   ['find-references', 'Find references', 'Searches the web for 2–4 images per element, downloads them and scores each for every style.'],
-  ['compose-moodboard', 'Make the mood board', 'Cuts the pieces out and composes a collage of the real assets.'],
   ['vendor-research', 'Find vendor products', 'Finds buyable products in India with price, size, material and the standard image set.'],
+  ['compose-moodboard', 'Make the mood board', 'Codex image generation: a designer\'s board showing the room\'s real products, library pieces and references.'],
   ['render-room', 'Render', 'Furnishes the blank view with the mood board, in the style\'s light and frame.']]
 
 function RoomPanel({ p, r, vocab, jobs, reload, reloadJobs, save }) {
@@ -128,7 +128,7 @@ function RoomPanel({ p, r, vocab, jobs, reload, reloadJobs, save }) {
     {r.products.length > 0 && <Card title={`Vendor products · ${r.products.length}`} pad={false}><Products list={r.products} onOpen={setFull} /></Card>}
 
     <div className="grid g2" style={{ marginBottom: 0 }}>
-      <Card title={`Mood board · ${r.moodboard.length}`} actions={<span className="small muted">Codex collage, or drop your own</span>}>
+      <Card title={`Mood board · ${r.moodboard.length}`} actions={<span className="small muted">Codex image generation, or drop your own</span>}>
         <Thumbs list={[...r.moodboard].reverse()} big onOpen={setFull} onRemove={(f) => remove('moodboard', f)} />
         <div style={{ marginTop: 10 }}><ImageDrop url={roomUrl(p.id, r.id, 'moodboard')} onDone={reload} hint="Your own board, if you have one." /></div>
       </Card>
