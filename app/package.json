@@ -1,0 +1,31 @@
+{
+  "name": "accord-design-engine",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Accord Design Engine (OuTSDe): from the client brief to room renders through references, assets, mood boards and Codex CLI.",
+  "scripts": {
+    "engine": "node engine/server.mjs",
+    "ui": "node node_modules/vite/bin/vite.js",
+    "dev": "node dev.mjs",
+    "build": "node node_modules/vite/bin/vite.js build",
+    "start": "node node_modules/vite/bin/vite.js build && node engine/server.mjs --serve",
+    "test": "node engine/smoke.mjs",
+    "check": "node --check engine/server.mjs && node --check engine/assets.mjs && node --check engine/taxonomy.mjs && node --check engine/seed.mjs && node --check dev.mjs"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "multer": "^2.0.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

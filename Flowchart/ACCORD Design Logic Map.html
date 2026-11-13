@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ACCORD Design Logic Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one tall toolbar-and-canvas page; the map is a left/right mind map in a scrollable stage. */
+:root {
+  --bg: #f4f5f6;
+  --panel: #ffffff;
+  --ink: #1c2024;
+  --muted: #5d646c;
+  --line: #d5d9de;
+  --c0: #8a4b2d; --c1: #2f6b66; --c2: #4c4aa0; --c3: #9a6f17;
+  --c4: #a8325a; --c5: #3f6e2e; --c6: #1f5f8f; --c7: #6b4a8a;
+  --display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14171a; --panel: #1b1f23; --ink: #e8eaec; --muted: #9aa3ab; --line: #2e353b;
+    --c0: #e0956d; --c1: #6fc4bc; --c2: #9c9af0; --c3: #e0b34a;
+    --c4: #ee7ea3; --c5: #8fcf78; --c6: #6db5ea; --c7: #c19be0;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14171a; --panel: #1b1f23; --ink: #e8eaec; --muted: #9aa3ab; --line: #2e353b;
+  --c0: #e0956d; --c1: #6fc4bc; --c2: #9c9af0; --c3: #e0b34a;
+  --c4: #ee7ea3; --c5: #8fcf78; --c6: #6db5ea; --c7: #c19be0;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); }
+body { padding: 20px 16px 40px; }
+header { max-width: 1100px; margin: 0 auto 14px; }
+h1 { font-family: var(--display); font-weight: 700; font-size: 28px; line-height: 1.15; margin: 0 0 6px; text-wrap: balance; }
+header p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; max-width: 70ch; }
+.bar { max-width: 1100px; margin: 14px auto 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.bar button {
+  font: 600 13px var(--body); color: var(--ink); background: var(--panel);
+  border: 1px solid var(--line); border-radius: 8px; padding: 7px 12px; cursor: pointer;
+}
+.bar button:hover { border-color: var(--muted); }
+.bar button:focus-visible, g.node:focus-visible { outline: 2px solid var(--c6); outline-offset: 2px; }
+.bar .hint { color: var(--muted); font-size: 13px; margin-left: auto; }
+.stage {
+  max-width: 1400px; margin: 0 auto; background: var(--panel); border: 1px solid var(--line);
+  border-radius: 12px; overflow: auto; height: min(80vh, 1100px);
+}
+svg { display: block; }
+svg text { font-family: var(--body); fill: var(--ink); }
+.n rect { fill: color-mix(in srgb, var(--c) 8%, var(--panel)); stroke: color-mix(in srgb, var(--c) 60%, var(--panel)); stroke-width: 1; }
+.n.d1 rect { fill: color-mix(in srgb, var(--c) 24%, var(--panel)); stroke: var(--c); stroke-width: 2; }
+.n.mid rect { fill: color-mix(in srgb, var(--c) 15%, var(--panel)); stroke: var(--c); stroke-width: 1.4; }
+.n.unsure rect { stroke-dasharray: 4 3; }
+.n.d1 text { font-weight: 600; }
+.n.has { cursor: pointer; }
+.n.has:hover rect { stroke-width: 2.4; }
+.lk { fill: none; stroke: var(--c); opacity: .75; }
+.badge circle { fill: var(--c); }
+.badge text { fill: var(--panel); font-size: 11px; font-weight: 600; }
+.center rect { fill: var(--ink); }
+.center text { fill: var(--bg); font-family: var(--display); font-weight: 700; }
+.centersub { font-size: 12.5px; fill: var(--muted); font-style: italic; }
+.c0 { --c: var(--c0); } .c1 { --c: var(--c1); } .c2 { --c: var(--c2); } .c3 { --c: var(--c3); }
+.c4 { --c: var(--c4); } .c5 { --c: var(--c5); } .c6 { --c: var(--c6); } .c7 { --c: var(--c7); }
+footer { max-width: 1100px; margin: 14px auto 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+footer b { color: var(--ink); font-weight: 600; }
+.dash { display: inline-block; width: 26px; height: 12px; border: 1.5px dashed var(--muted); border-radius: 4px; vertical-align: -2px; margin-right: 6px; }
+@media (prefers-reduced-motion: no-preference) { .n rect { transition: stroke-width .12s; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Design logic for ACCORD</h1>
+  <p>Mind map of the OuTSDe whiteboard. Process on the right, with visual-language notes below it. Focus, space vocabulary and styles on the left.</p>
+</header>
+<div class="bar" role="toolbar" aria-label="Map controls">
+  <button type="button" id="b-fit">Fit to width</button>
+  <button type="button" id="b-100">100%</button>
+  <button type="button" id="b-out" aria-label="Zoom out">−</button>
+  <button type="button" id="b-in" aria-label="Zoom in">+</button>
+  <button type="button" id="b-fold">Fold to branches</button>
+  <button type="button" id="b-open">Unfold all</button>
+  <span class="hint">Click any branch to fold or unfold it. Use + to zoom in on the text.</span>
+</div>
+<div class="stage" id="stage"><svg id="map" role="group" aria-label="Mind map of the ACCORD design logic whiteboard"></svg></div>
+<footer>
+  <p><span class="dash"></span><b>Dashed outline:</b> hard to read on the video, or the board's arrows did not say where it belongs. Check these against the board.</p>
+  <p>The board lists ten Accord styles: Modern, Contemporary, Mid-Century Modern, Farm House, Industrial, Traditional, Minimalism, Biophilic Interiors, Maximalism and Maximal Minimalism. Under Space vocabulary they sit in two categories.</p>
+</footer>
+
+<script>
+(function () {
+  var N = function (t, c, u) { return { t: t, c: c || null, u: !!u }; };
+
+  var CENTER = { t: ["Design Logic", "for ACCORD"], sub: "What is design logic in interiors?" };
+
+  var RIGHT = [
+    N("Why it is needed for Accord", [
+      N("To make design relatable to the user group of the project")
+    ]),
+    N("A Game of Trends", [
+      N("“Creating illusion, selling identities”", [N("Seeker"), N("Host"), N("Settler")])
+    ]),
+    N("Basic process to follow", [
+      N("Step 1 · Study", [
+        N("Project study (anchoring factor of the site)", [
+          N("Architectural style"), N("Vision of the project"), N("Vision of client / developer"),
+          N("What a project actually needs to speak about"), N("Lifestyle envisioned"),
+          N("What the project demands"), N("Context")
+        ]),
+        N("Interior trend study (world-wide)", [
+          N("Trendy material and compositions"), N("Suitable style to incorporate"),
+          N("Cultural study for artworks and the space (contextual)")
+        ])
+      ]),
+      N("Step 2 · Vision board", [
+        N("Reference images", [
+          N("Suitable possible interior styles for the space / project"),
+          N("Furniture, lighting, colour (theme) for each and every space, separately")
+        ]),
+        N("Style vision board")
+      ]),
+      N("Step 3 · Reference images for every area / space", [
+        N("Primary space", [N("Living area"), N("Master bedroom / bedroom")]),
+        N("Secondary space", [
+          N("Dining area"), N("Kitchen area"),
+          N("Bathrooms", [N("Master bathroom"), N("Secondary bathrooms"), N("Powder room")])
+        ]),
+        N("Transitional spaces (in-between zones)", [N("Passage"), N("Balcony spaces")]),
+        N("Red note on the board, partly cut off", null, true)
+      ]),
+      N("Step 4 · Space most needed? (wording unclear)", null, true)
+    ]),
+    N("Visual-language notes (left margin)", [
+      N("Visual language cloud", [
+        N("Sense of informality"), N("Sense of weekend home"), N("Framed views"),
+        N("Visually light material palette"), N("A sense of casual, quirky"),
+        N("Pop of natural materials"), N("Sense of openness")
+      ]),
+      N("Second list (styles not mapped on the board)", [
+        N("Material heavy"), N("Texture and colour heavy"), N("Bold yet silent"),
+        N("Sleek furniture, bold material")
+      ], true)
+    ])
+  ];
+
+  var LEFT = [
+    N("What will be the focus?", [
+      N("Sense of arrival"), N("Sequence of spaces"), N("Sense of depth"),
+      N("Spaces which talk to each other but do not compete")
+    ]),
+    N("Visual language?", [
+      N("Organisation of proportion and scale"),
+      N("“Controlled yet free” proportions"),
+      N("Juxtaposition of colour, pattern and forms"),
+      N("A further cloud to the right, cut off", null, true)
+    ]),
+    N("Space vocabulary?", [
+      N("Category 2", [
+        N("Minimalism"), N("Contemporary"), N("Mid-Century"), N("Mid-Century Modern"), N("Modern"),
+        N("Notes", [
+          N("Shades of beige and white"),
+          N("Easy, simple, modern, sleek"),
+          N("Pop in terms of", [
+            N("Art"), N("Bold furniture"), N("Bold / designed light fixtures"),
+            N("Softscape (textile, patterns, material)")
+          ])
+        ])
+      ]),
+      N("Category 1", [
+        N("Maximalist interiors", [
+          N("Rich Indian Traditional", [
+            N("Pattern on pattern"), N("Composition of art objects"), N("Artwork 3D × 2D")
+          ]),
+          N("Antique Eclectic", [N("Heritage arts", null, true)]),
+          N("Maximal Traditional Minimal", [N("A sense of global mixture")])
+        ]),
+        N("Biophilic"), N("Maximal Minimalism"), N("Farm House"), N("Industrial"), N("Traditional"),
+        N("Inside / outside notes (category unclear)", [
+          N("Choreography between inside and outside"),
+          N("Blurring the boundary inside–outside"),
+          N("Colours which resonate with the colour of nature"),
+          N("Juxtaposition of natural material with plants")
+        ], true)
+      ])
+    ]),
+    N("“Need not to be Indian”: reflection of a specific culture", [
+      N("Different traditional cultural reflection", [
+        N("Japanese culture-inspired style"), N("Islamic culture-inspired style"),
+        N("South Indian culture-inspired"), N("North Indian culture-inspired")
+      ]),
+      N("Feeds into", [N("Craft and artistry"), N("Elements specific to time period")])
+    ])
+  ];
+
+  // ---- identify nodes, assign branch colour classes
+  var byId = {}, seq = 0;
+  function tag(n, ci) { n.id = "n" + (seq++); n.ci = ci; byId[n.id] = n; (n.c || []).forEach(function (k) { tag(k, ci); }); }
+  var COLORS_R = [0, 1, 2, 3], COLORS_L = [4, 5, 6, 7];
+  RIGHT.forEach(function (b, i) { tag(b, COLORS_R[i]); });
+  LEFT.forEach(function (b, i) { tag(b, COLORS_L[i]); });
+
+  // ---- text measuring
+  var ctx = document.createElement("canvas").getContext("2d");
+  function font(d) { return (d === 1 ? "600 14px" : "400 12.5px") + ' "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif'; }
+  function wrap(text, d, maxW) {
+    ctx.font = font(d);
+    var words = text.split(" "), lines = [], cur = "";
+    words.forEach(function (w) {
+      var t = cur ? cur + " " + w : w;
+      if (ctx.measureText(t).width > maxW && cur) { lines.push(cur); cur = w; } else { cur = t; }
+    });
+    if (cur) lines.push(cur);
+    return lines;
+  }
+  function measure(n, d) {
+    n.d = d;
+    n.lines = wrap(n.t, d, d === 1 ? 200 : 185);
+    ctx.font = font(d);
+    var tw = 0; n.lines.forEach(function (l) { tw = Math.max(tw, ctx.measureText(l).width); });
+    n.lh = d === 1 ? 17 : 15;
+    n.w = Math.ceil(tw) + 22;
+    n.h = n.lines.length * n.lh + 12;
+  }
+
+  var GAPX = 46, GAPY = 8, HALFC = 104;
+
+  function kids(n) { return (!n.fold && n.c) ? n.c : []; }
+
+  function layoutSide(branches) {
+    var cols = [];
+    branches.forEach(function (b) {
+      (function walk(n, d) {
+        measure(n, d);
+        cols[d] = Math.max(cols[d] || 0, n.w + ((n.fold && n.c) ? 30 : 0));
+        kids(n).forEach(function (k) { walk(k, d + 1); });
+      })(b, 1);
+    });
+    var cursor = 0;
+    function place(n) {
+      var ks = kids(n);
+      if (!ks.length) { n.cy = cursor + n.h / 2; cursor += n.h + GAPY; }
+      else { ks.forEach(place); n.cy = (ks[0].cy + ks[ks.length - 1].cy) / 2; }
+    }
+    branches.forEach(function (b) { place(b); cursor += 16; });
+    var colX = [0, HALFC + 56];
+    for (var d = 2; d < cols.length; d++) colX[d] = colX[d - 1] + cols[d - 1] + GAPX;
+    return { height: Math.max(cursor - 16, 0), colX: colX, cols: cols, extent: colX[cols.length - 1] + cols[cols.length - 1] };
+  }
+
+  function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+  var svg = document.getElementById("map"), stage = document.getElementById("stage");
+  var TW = 0, TH = 0, zoom = 1;
+
+  function render() {
+    var R = layoutSide(RIGHT), L = layoutSide(LEFT);
+    var PAD = 28, H = Math.max(R.height, L.height);
+    var originX = L.extent + PAD, W = L.extent + R.extent + PAD * 2;
+    var cy0 = PAD + H / 2, out = [];
+
+    function absolute(n, side, S, off) {
+      n.x = side > 0 ? S.colX[n.d] : -S.colX[n.d] - n.w;
+      n.y = n.cy + off - n.h / 2;
+      kids(n).forEach(function (k) { absolute(k, side, S, off); });
+    }
+    function sideOff(S) { return PAD + (H - S.height) / 2; }
+    RIGHT.forEach(function (b) { absolute(b, 1, R, sideOff(R)); });
+    LEFT.forEach(function (b) { absolute(b, -1, L, sideOff(L)); });
+
+    function link(x1, y1, x2, y2, w) {
+      var mx = (x1 + x2) / 2;
+      return '<path class="lk" stroke-width="' + w + '" d="M' + x1 + ' ' + y1 + ' C' + mx + ' ' + y1 + ' ' + mx + ' ' + y2 + ' ' + x2 + ' ' + y2 + '"/>';
+    }
+    function draw(n, side, parent) {
+      var s = "";
+      var outerX = side > 0 ? n.x + n.w + ((n.fold && n.c) ? 30 : 0) : n.x - ((n.fold && n.c) ? 30 : 0);
+      var py, px;
+      if (parent) {
+        px = side > 0 ? parent.x + parent.w + ((parent.fold && parent.c) ? 30 : 0) : parent.x - ((parent.fold && parent.c) ? 30 : 0);
+        py = parent.y + parent.h / 2;
+      } else { px = side * HALFC; py = cy0; }
+      var cx = side > 0 ? n.x : n.x + n.w, cyy = n.y + n.h / 2;
+      s += link(px, py, cx, cyy, n.d === 1 ? 2.6 : n.d === 2 ? 1.9 : 1.3);
+      kids(n).forEach(function (k) { s += draw(k, side, n); });
+      return s;
+    }
+    function nodes(n) {
+      var has = !!n.c, cls = "n" + (n.d === 1 ? " d1" : (has ? " mid" : "")) + (n.u ? " unsure" : "") + (has ? " has" : "");
+      var s = '<g class="' + cls + ' node" data-id="' + n.id + '"' + (has ? ' tabindex="0" role="button" aria-expanded="' + (!n.fold) + '" aria-label="' + esc(n.t) + '"' : "") + '>';
+      s += '<rect x="' + n.x + '" y="' + n.y + '" width="' + n.w + '" height="' + n.h + '" rx="' + (n.d === 1 ? 9 : 6) + '"/>';
+      var ty = n.y + 6 + n.lh * 0.78;
+      n.lines.forEach(function (l, i) {
+        s += '<text x="' + (n.x + 11) + '" y="' + (ty + i * n.lh) + '" font-size="' + (n.d === 1 ? 14 : 12.5) + '">' + esc(l) + '</text>';
+      });
+      s += "</g>";
+      if (has && n.fold) {
+        var side = n.x >= 0 ? 1 : -1, bx = side > 0 ? n.x + n.w + 15 : n.x - 15;
+        s += '<g class="badge"><circle cx="' + bx + '" cy="' + (n.y + n.h / 2) + '" r="11"/><text x="' + bx + '" y="' + (n.y + n.h / 2 + 4) + '" text-anchor="middle">+' + countAll(n) + '</text></g>';
+      }
+      kids(n).forEach(function (k) { s += nodes(k); });
+      return s;
+    }
+    function countAll(n) { var t = 0; (n.c || []).forEach(function (k) { t += 1 + countAll(k); }); return t; }
+
+    out.push('<g transform="translate(' + originX + ',0)">');
+    RIGHT.forEach(function (b) { out.push('<g class="c' + b.ci + '">' + draw(b, 1, null) + nodes(b) + "</g>"); });
+    LEFT.forEach(function (b) { out.push('<g class="c' + b.ci + '">' + draw(b, -1, null) + nodes(b) + "</g>"); });
+    // center
+    var cw = HALFC * 2, ch = 70;
+    out.push('<g class="center"><rect x="' + (-HALFC) + '" y="' + (cy0 - ch / 2) + '" width="' + cw + '" height="' + ch + '" rx="16"/>' +
+      '<text x="0" y="' + (cy0 - 4) + '" text-anchor="middle" font-size="20">' + CENTER.t[0] + '</text>' +
+      '<text x="0" y="' + (cy0 + 20) + '" text-anchor="middle" font-size="20">' + CENTER.t[1] + '</text></g>');
+    out.push('<text class="centersub" x="0" y="' + (cy0 + ch / 2 + 20) + '" text-anchor="middle">' + CENTER.sub + '</text>');
+    out.push("</g>");
+
+    TW = W; TH = H + PAD * 2;
+    svg.setAttribute("viewBox", "0 0 " + TW + " " + TH);
+    svg.innerHTML = out.join("");
+    applyZoom();
+  }
+
+  function applyZoom() {
+    svg.setAttribute("width", Math.round(TW * zoom));
+    svg.setAttribute("height", Math.round(TH * zoom));
+  }
+  function fit() {
+    zoom = Math.min(1, Math.max(0.5, (stage.clientWidth - 2) / TW));
+    applyZoom();
+  }
+
+  function toggle(id) { var n = byId[id]; if (n && n.c) { n.fold = !n.fold; var sl = stage.scrollLeft, st = stage.scrollTop; render(); stage.scrollLeft = sl; stage.scrollTop = st; } }
+  svg.addEventListener("click", function (e) {
+    var g = e.target.closest ? e.target.closest("g.node") : null;
+    if (g && g.classList.contains("has")) toggle(g.getAttribute("data-id"));
+  });
+  svg.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    var g = e.target.closest ? e.target.closest("g.node") : null;
+    if (g && g.classList.contains("has")) { e.preventDefault(); var id = g.getAttribute("data-id"); toggle(id); var again = svg.querySelector('g.node[data-id="' + id + '"]'); if (again) again.focus(); }
+  });
+
+  document.getElementById("b-fit").onclick = fit;
+  document.getElementById("b-100").onclick = function () { zoom = 1; applyZoom(); };
+  document.getElementById("b-in").onclick = function () { zoom = Math.min(2, zoom + 0.15); applyZoom(); };
+  document.getElementById("b-out").onclick = function () { zoom = Math.max(0.3, zoom - 0.15); applyZoom(); };
+  document.getElementById("b-fold").onclick = function () {
+    RIGHT.concat(LEFT).forEach(function (b) { b.fold = !!b.c; });
+    render(); fit(); stage.scrollTop = 0;
+  };
+  document.getElementById("b-open").onclick = function () {
+    Object.keys(byId).forEach(function (k) { byId[k].fold = false; });
+    render(); fit();
+  };
+
+  render(); fit();
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(function () { render(); fit(); }); }
+})();
+</script>
+</body>
+</html>

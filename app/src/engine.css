@@ -1,0 +1,72 @@
+/* Design Engine additions, in the Accord language (tokens from accord-base.css). */
+.textarea { min-height: 84px; padding: 10px 12px; line-height: 1.5; resize: vertical; font: 400 13.5px var(--sans) }
+.mono-ta { font: 400 12.5px/1.55 var(--mono) }
+.card .grid > .field { margin-bottom: 0 }
+.card-body > .field + .field, .card-body > .grid + .field { margin-top: 14px }
+.room-btn { width: 100%; display: flex; gap: 12px; align-items: center; text-align: left; background: none; border: 1px solid transparent; padding: 7px 8px; margin-bottom: 4px; color: var(--fg2) }
+.room-btn:hover { background: var(--hover); color: var(--fg) } .room-btn.on { border-color: var(--line-3); background: var(--bg3); color: var(--fg); border-left: 2px solid var(--m-accord) }
+.room-btn img, .room-ph { width: 54px; height: 38px; object-fit: cover; flex: none; background: var(--bg4); display: grid; place-items: center; color: var(--fg3); font: 600 14px var(--sans) }
+.room-btn b { display: block; font-weight: 500; font-size: 13.5px } .room-btn small { color: var(--fg3); font-size: 11.5px }
+.drop { border: 1px dashed var(--line-3); padding: 12px; background: var(--bg) } .drop.over { border-color: var(--m-accord); background: var(--good-soft) }
+.thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 12px }
+.thumbs.big { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) }
+.thumb { position: relative; background: var(--bg4) } .thumb img { width: 100%; aspect-ratio: 16/10; object-fit: cover; display: block; cursor: zoom-in }
+.thumb-x { position: absolute; top: 6px; right: 6px; width: 26px; height: 26px; border: 1px solid var(--line-3); background: var(--glass); color: var(--fg); opacity: 0; transition: opacity .15s }
+.thumb:hover .thumb-x { opacity: 1 }
+.nodes { display: flex; align-items: center; flex-wrap: wrap; gap: 0 }
+.node { border: 1px solid var(--line-3); padding: 8px 12px; min-width: 96px; background: var(--bg) } .node b { display: block; font: 400 10px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--fg3) }
+.node small { font-size: 13px; color: var(--fg2) } .node.ok { border-color: var(--m-accord) } .node.ok b { color: var(--m-accord) }
+.node-link { width: 22px; height: 1px; background: var(--line-3); position: relative } .node-link::after { content: ''; position: absolute; right: -3px; top: -3px; width: 7px; height: 7px; border-radius: 50%; background: var(--line-3) }
+.needs { margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px }
+.swatch { width: 18px; height: 18px; border: 1px solid var(--line-3); display: inline-block }
+.job { border-bottom: 1px solid var(--line-2) } .job .check-row { border-bottom: 0 }
+.job-detail { padding: 4px 0 14px } .job-detail pre { white-space: pre-wrap; word-break: break-word; background: var(--bg); border: 1px solid var(--line); padding: 10px 12px; font: 400 12px/1.5 var(--mono); max-height: 320px; overflow: auto; margin: 6px 0 12px }
+.proj-cover { width: calc(100% + 44px); margin: -22px -22px 6px; aspect-ratio: 16/8; object-fit: cover }
+.stats.g4, .stats.g5 { gap: 1px }
+.steps { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line) }
+.step { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; padding: 10px 12px; background: var(--bg2) }
+.step-n { font: 400 11px var(--mono); color: var(--fg3); width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line-3); display: grid; place-items: center }
+.step.ok .step-n { border-color: var(--m-accord); color: var(--m-accord) } .step.busy .step-n { border-color: var(--warn); color: var(--warn); animation: pulse 1.4s infinite }
+@keyframes pulse { 50% { opacity: .35 } }
+.step-t b { display: block; font-weight: 500 } .step-t small { color: var(--fg3); font-size: 12px }
+.thumb-cap { font: 400 10px var(--mono); color: var(--fg3); padding: 4px 2px; text-transform: capitalize; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.prod-img { width: 56px; height: 56px; object-fit: cover; cursor: zoom-in; background: var(--bg4) }
+.img-tag { display: inline-block; margin: 0 4px 4px 0; padding: 1px 6px; border: 1px solid var(--line-3); cursor: zoom-in; font: 400 10.5px var(--mono) }
+.lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px }
+.lib-card { background: var(--bg2); border: 1px solid var(--line) } .lib-card img { width: 100%; height: 170px; object-fit: cover; display: block; cursor: zoom-in; background: var(--bg4) }
+.lib-body { padding: 10px 12px 12px } .lib-body b { font-weight: 500; font-size: 13.5px }
+/* asset library */
+.lib-layout { display: grid; grid-template-columns: 290px 1fr; gap: 18px; align-items: start }
+.lib-layout > .card { position: sticky; top: 80px; max-height: calc(100vh - 100px); overflow: auto }
+.tree-row { display: flex; align-items: center; gap: 4px; padding: 4px 6px; cursor: default; border-left: 2px solid transparent }
+.tree-row:hover { background: var(--hover) } .tree-row.on { background: var(--bg3); border-left-color: var(--m-accord) }
+.tree-tw { width: 16px; color: var(--fg3); cursor: pointer; font-size: 11px; flex: none; text-align: center }
+.tree-name { flex: 1; cursor: pointer; font-size: 13.5px } .tree-row.on .tree-name { color: var(--fg); font-weight: 500 }
+.tree-n { font: 400 11px var(--mono); color: var(--fg3) }
+.lib-ph { height: 170px; display: grid; place-items: center; color: var(--fg3); font: 400 11px var(--mono); background: var(--bg4); text-transform: uppercase; letter-spacing: .1em }
+.lib-card img.std { object-fit: contain; background: #fff }
+.lib-card:hover { border-color: var(--line-3) }
+.slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px }
+.slot { border: 1px solid var(--line); padding: 10px; background: var(--bg) } .slot b { font-weight: 500 }
+.slot-hint { margin: 4px 0 8px; min-height: 30px }
+.slot-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px }
+.slot-img { position: relative; aspect-ratio: 1; background: #fff; border: 1px solid var(--line-2); display: grid; place-items: center; overflow: hidden }
+.slot-img.empty { background: var(--bg2); border-style: dashed } .slot-img.over { border-color: var(--m-accord) }
+.slot-img img { width: 100%; height: 100%; object-fit: contain; cursor: zoom-in }
+.slot-img:hover .thumb-x { opacity: 1 }
+.slot-add { cursor: pointer; color: var(--fg3); font: 400 11px var(--mono); text-transform: uppercase; letter-spacing: .08em; padding: 20px; text-align: center }
+.slot-add:hover { color: var(--fg) }
+.slot-tag { position: absolute; left: 6px; bottom: 6px; font: 400 9.5px var(--mono); text-transform: uppercase; letter-spacing: .1em; color: #666; background: rgba(255,255,255,.85); padding: 1px 5px }
+.slot-img.empty .slot-tag { display: none }
+.scores { display: grid; gap: 4px }
+.score { display: grid; grid-template-columns: 170px 1fr 30px; gap: 8px; align-items: center; font-size: 12.5px; color: var(--fg3) }
+.score.fit { color: var(--fg) } .score .bar { height: 6px; background: var(--bg4); position: relative }
+.score .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--line-3) } .score.fit .bar i { background: var(--m-accord) }
+.vendor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px }
+.vendor-card { background: var(--bg2); border: 1px solid var(--line); cursor: pointer } .vendor-card:hover { border-color: var(--line-3) }
+.vendor-thumbs { display: grid; grid-template-columns: repeat(4, 1fr); height: 110px; background: #fff; overflow: hidden }
+.vendor-thumbs img { width: 100%; height: 110px; object-fit: contain } .vendor-thumbs .lib-ph { grid-column: 1 / -1; height: 110px }
+.chip { border: 1px solid var(--line-3); background: none; color: var(--fg2); padding: 3px 10px; font-size: 12px; cursor: pointer }
+.chip.on { border-color: var(--m-accord); color: var(--fg); background: var(--good-soft) }
+.modal.modal-wide { width: min(980px, 94vw) }
+@media (max-width: 900px) { .lib-layout { grid-template-columns: 1fr } .lib-layout > .card { position: static; max-height: none } }

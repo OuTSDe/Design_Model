@@ -1,0 +1,50 @@
+# Accord Design Engine · checks on every push and pull request
+# Builds the UI, checks the engine code, and runs the engine smoke test (engine/smoke.mjs) against an empty Design_Model.
+# Codex is not needed here: jobs are only queued, never run.
+name: Design Engine · checks
+
+on:
+  push:
+    paths: ['app/**', '.github/workflows/design-engine-*.yml']
+  pull_request:
+    paths: ['app/**', '.github/workflows/design-engine-*.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: design-engine-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install
+        run: npm ci --no-audit --no-fund
+
+      - name: Check engine code
+        run: npm run check
+
+      - name: Engine smoke test
+        run: npm test
+
+      - name: Build the UI
+        run: npm run build
+
+      - name: Keep the built UI
+        uses: actions/upload-artifact@v4
+        with:
+          name: design-engine-ui-${{ github.sha }}
+          path: app/dist
+          retention-days: 14

@@ -1,0 +1,64 @@
+# Accord Design Engine · publish the UI to GitHub Pages
+# The page is only the interface. It talks to the Design Engine running on the designer's PC (http://localhost:4317),
+# where Codex runs and the files live in Google Drive. Nothing from Projects, Library or Vendors is uploaded.
+# One-time set-up: Settings → Pages → Source: "GitHub Actions"; then add the Pages address
+# (e.g. https://<account>.github.io) to "allowedOrigins" in app/engine/config.json on the design PC.
+name: Design Engine · GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths: ['app/src/**', 'app/index.html', 'app/vite.config.js', 'app/package*.json', '.github/workflows/design-engine-pages.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: design-engine-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install
+        run: npm ci --no-audit --no-fund
+
+      - name: Build for Pages
+        env:
+          VITE_ENGINE_URL: http://localhost:4317
+        run: |
+          npm run build
+          cp dist/index.html dist/404.html
+          touch dist/.nojekyll
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: app/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

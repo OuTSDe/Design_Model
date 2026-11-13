@@ -1,0 +1,22 @@
+# Accord Design Engine · what stays out of GitHub
+# Client and vendor data, downloaded images and run state live only in Google Drive.
+Projects/
+Library/
+Vendors/
+.engine/
+Meeting_Log/
+Vocabulary/styles/*/render-ref/
+Vocabulary/styles/*/moodboard-ref/
+Vocabulary/styles/*/candidates/
+Vocabulary/styles/*/sources.json
+*.original.md
+
+# app build and packages
+app/node_modules/
+app/dist/
+app/concurrently
+app/accord-design-engine@*
+*.log
+.DS_Store
+Thumbs.db
+desktop.ini

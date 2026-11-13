@@ -1,0 +1,24 @@
+{
+  "port": 4317,
+  "accordExport": "../Accord_Data/Exports/Accord Database.xlsx",
+  "codex": {
+    "bin": "codex",
+    "args": [
+      "exec",
+      "--skip-git-repo-check",
+      "--sandbox",
+      "workspace-write",
+      "-c",
+      "sandbox_workspace_write.network_access=true",
+      "-c",
+      "web_search=live"
+    ],
+    "imageFlag": "-i",
+    "promptFromStdin": true,
+    "timeoutMinutes": 45,
+    "localWorkdir": true
+  },
+  "maxParallelJobs": 2,
+  "allowedOrigins": [],
+  "_allowedOrigins_help": "Add the GitHub Pages address of the Design Engine here, e.g. https://outsde.github.io (origin only, no path)."
+}

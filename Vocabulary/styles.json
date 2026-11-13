@@ -1,0 +1,69 @@
+{
+  "note": "The Accord styles. category 2 = shared furniture pool. Edit names or add styles here; each id has a folder in styles/.",
+  "styles": [
+    {
+      "id": "minimalism",
+      "name": "Minimalism",
+      "category": 2
+    },
+    {
+      "id": "contemporary",
+      "name": "Contemporary",
+      "category": 2
+    },
+    {
+      "id": "mid-century-modern",
+      "name": "Mid-Century Modern",
+      "category": 2
+    },
+    {
+      "id": "modern",
+      "name": "Modern",
+      "category": 2
+    },
+    {
+      "id": "maximalism",
+      "name": "Maximalism",
+      "category": 1,
+      "subs": [
+        {
+          "id": "rich-indian-traditional",
+          "name": "Rich Indian Traditional"
+        },
+        {
+          "id": "antique-eclectic",
+          "name": "Antique Eclectic"
+        },
+        {
+          "id": "maximal-traditional-minimal",
+          "name": "Maximal Traditional Minimal"
+        }
+      ]
+    },
+    {
+      "id": "maximal-minimalism",
+      "name": "Maximal Minimalism",
+      "category": 1
+    },
+    {
+      "id": "biophilic",
+      "name": "Biophilic Interiors",
+      "category": 1
+    },
+    {
+      "id": "farm-house",
+      "name": "Farm House",
+      "category": 1
+    },
+    {
+      "id": "industrial",
+      "name": "Industrial",
+      "category": 1
+    },
+    {
+      "id": "traditional",
+      "name": "Traditional",
+      "category": 1
+    }
+  ]
+}

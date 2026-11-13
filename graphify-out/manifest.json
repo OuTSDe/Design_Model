@@ -1,0 +1,806 @@
+{
+  "CRM_Application/backend/Code.gs.js": {
+    "mtime": 1794483085.6798599,
+    "seen": 1794483100.350797,
+    "ast_hash": "26a8967d8fd4e883ecc2a340ad3106cc",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/package.json": {
+    "mtime": 1794483077.2995443,
+    "seen": 1794483100.3508031,
+    "ast_hash": "28a5a3a3f839dd254ff5fa8c3142cb0b",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/public/accord.config.js": {
+    "mtime": 1794483077.4095342,
+    "seen": 1794483100.3508055,
+    "ast_hash": "54a7dce56a377bc8ac5a4ba361f7d1e6",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/App.jsx": {
+    "mtime": 1794483077.3139832,
+    "seen": 1794483100.3508065,
+    "ast_hash": "d51be4b4363f8538ba3d8d33e47f769f",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/components/BulkLog.jsx": {
+    "mtime": 1794483077.3210795,
+    "seen": 1794483100.350808,
+    "ast_hash": "389561f1d4e00bd516f86b9f1601e53d",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/components/DataTable.jsx": {
+    "mtime": 1794483077.3166196,
+    "seen": 1794483100.350809,
+    "ast_hash": "8b249a768c618b1f31acfaef65b9b2ae",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/components/DocHeader.jsx": {
+    "mtime": 1794483077.3290553,
+    "seen": 1794483100.3508103,
+    "ast_hash": "a15ca4baa4cdd7c0409076a92ea63c8d",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/components/FileList.jsx": {
+    "mtime": 1794483077.3221233,
+    "seen": 1794483100.3508112,
+    "ast_hash": "edbfd3a055834110e29a32ff1cfed832",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/components/HelpGuide.jsx": {
+    "mtime": 1794483077.331219,
+    "seen": 1794483100.3508122,
+    "ast_hash": "ceb41dbf989d0f0a771eaf039dad8ba2",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/components/HelpPanel.jsx": {
+    "mtime": 1794483077.3231828,
+    "seen": 1794483100.3508132,
+    "ast_hash": "f3ee474b70aa5744cd65aa709ce7edba",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/components/Layout.jsx": {
+    "mtime": 1794483077.3256547,
+    "seen": 1794483100.350814,
+    "ast_hash": "8920ed76dfdb9a1304f8f3c9f81e23ff",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/components/LogInteraction.jsx": {
+    "mtime": 1794483077.3267257,
+    "seen": 1794483100.3508155,
+    "ast_hash": "dd35d7f9749c20e5e34ac26ace031d9c",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/components/MiniCalendar.jsx": {
+    "mtime": 1794483077.3301613,
+    "seen": 1794483100.3508162,
+    "ast_hash": "8b1043b003c4087563dfa3fba0000852",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/components/RecordForm.jsx": {
+    "mtime": 1794483077.327826,
+    "seen": 1794483100.3508172,
+    "ast_hash": "455969f9a6f3997925757e300339996e",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/components/RecordPicker.jsx": {
+    "mtime": 1794483077.3178196,
+    "seen": 1794483100.3508182,
+    "ast_hash": "f34b1d4e8f10a20e4871a6c7a19c14ac",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/components/ResidenceDiagrams.jsx": {
+    "mtime": 1794483077.33227,
+    "seen": 1794483100.3508189,
+    "ast_hash": "c63561b9f1832f3875bb593b4bf29c03",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/components/Tower.jsx": {
+    "mtime": 1794483077.319966,
+    "seen": 1794483100.3508198,
+    "ast_hash": "be98cb3a3e33c7dc1ffeb06d1f53f3f6",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/components/WhiteModel.jsx": {
+    "mtime": 1794483077.3244488,
+    "seen": 1794483100.3508205,
+    "ast_hash": "0dd193b132de98f6335a6135aa066b0d",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/components/ui.jsx": {
+    "mtime": 1794483077.3189025,
+    "seen": 1794483100.3508215,
+    "ast_hash": "77d7134cd4dc0425fe9b172c1ab5b3ca",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/help/access.js": {
+    "mtime": 1794483077.3769457,
+    "seen": 1794483100.3508222,
+    "ast_hash": "92f6b82f5cac2b99f27a75b9c7d4a51c",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/help/search.js": {
+    "mtime": 1794483077.375825,
+    "seen": 1794483100.350823,
+    "ast_hash": "103e5aed7f5f8693184381dd414e0bb7",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/help/ui.jsx": {
+    "mtime": 1794483077.374751,
+    "seen": 1794483100.3508236,
+    "ast_hash": "8f12d6d48ac18c9b8bc72bcc5a66abee",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/help/videos.js": {
+    "mtime": 1794483077.377995,
+    "seen": 1794483100.3508246,
+    "ast_hash": "be15a8b5ffab7f08b919040fcbc49714",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/calc.js": {
+    "mtime": 1794483077.3516269,
+    "seen": 1794483100.3508258,
+    "ast_hash": "cd831a9536eb38326f902d9d62bf6d62",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/construction.js": {
+    "mtime": 1794483077.3368638,
+    "seen": 1794483100.3508265,
+    "ast_hash": "b1904d7c36fbe33441e2ccac3acb855e",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/crypto.js": {
+    "mtime": 1794483077.3455808,
+    "seen": 1794483100.3508272,
+    "ast_hash": "019ac8f0c6ca2496db3840403f9faec6",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/designLink.js": {
+    "mtime": 1794483077.3490136,
+    "seen": 1794483100.350828,
+    "ast_hash": "b4b7e3643c8c606013c4baf1873027f9",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/drafts.js": {
+    "mtime": 1794483077.347697,
+    "seen": 1794483100.350829,
+    "ast_hash": "d2853e3557889ca2ab73c9f063df3352",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/escalate.js": {
+    "mtime": 1794483077.3605127,
+    "seen": 1794483100.3508296,
+    "ast_hash": "a87c6c16cd292cc871e236048bbd14db",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/fitPages.js": {
+    "mtime": 1794483077.3572948,
+    "seen": 1794483100.3508303,
+    "ast_hash": "33bfd7911d46ae349efb302388093af5",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/folders.js": {
+    "mtime": 1794483077.350321,
+    "seen": 1794483100.350831,
+    "ast_hash": "a6fbc3b4d8e20478d1f05a22667dbdba",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/format.js": {
+    "mtime": 1794483077.358365,
+    "seen": 1794483100.350832,
+    "ast_hash": "94dfc9d794a5e157177f98a88b60a204",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/geo.js": {
+    "mtime": 1794483077.3412664,
+    "seen": 1794483100.3508327,
+    "ast_hash": "4493c4b98dbf2e78cbd3b07ec616dc97",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/hr.js": {
+    "mtime": 1794483077.3527668,
+    "seen": 1794483100.3508337,
+    "ast_hash": "029003e04ec1bf6eb2332cf0fbd7dcc7",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/kyc.js": {
+    "mtime": 1794483077.353838,
+    "seen": 1794483100.3508344,
+    "ast_hash": "99e2ded3ac8569cfc8e491e82737993e",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/links.js": {
+    "mtime": 1794483077.3615546,
+    "seen": 1794483100.350835,
+    "ast_hash": "0a49b976502447093d10ccc54797e434",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/logo.js": {
+    "mtime": 1794483077.3334968,
+    "seen": 1794483100.3508358,
+    "ast_hash": "0452d277516e14c483eec0d5344a9f54",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/parking.js": {
+    "mtime": 1794483077.3423173,
+    "seen": 1794483100.3508365,
+    "ast_hash": "c1061cf4a6cfe73891a365d5be1fba9e",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/perms.js": {
+    "mtime": 1794483077.3399932,
+    "seen": 1794483100.3508372,
+    "ast_hash": "0312ac0fe3460164f80fd92adf426435",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/schedule.js": {
+    "mtime": 1794483077.3357778,
+    "seen": 1794483100.350838,
+    "ast_hash": "e9aa32d494425ad6870572050474d647",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/seed.js": {
+    "mtime": 1794483077.3548982,
+    "seen": 1794483100.350839,
+    "ast_hash": "0fdc57bef3a2e9a7b1c5c7f864fb8bd3",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/sha256.js": {
+    "mtime": 1794483077.3379114,
+    "seen": 1794483100.3508396,
+    "ast_hash": "57a08a2e02b40217b39e3477f4ea162d",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/spell.js": {
+    "mtime": 1794483077.3389473,
+    "seen": 1794483100.3508403,
+    "ast_hash": "9e301064fbe2bcbf0d3d42fbc2d275e4",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/store.jsx": {
+    "mtime": 1794483077.3345354,
+    "seen": 1794483100.3508427,
+    "ast_hash": "df8c4ca0ff682af38c9f736215f8428f",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/testflag.js": {
+    "mtime": 1794483077.3445158,
+    "seen": 1794483100.3508434,
+    "ast_hash": "bccad6267115960558e97df258e3d282",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/theme.js": {
+    "mtime": 1794483077.3466196,
+    "seen": 1794483100.350844,
+    "ast_hash": "607955dde44f1c6486fd04197639b96e",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/totp.js": {
+    "mtime": 1794483077.3594217,
+    "seen": 1794483100.3508449,
+    "ast_hash": "46995c42fefd9359f5048f6c769c7a5a",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/tower.js": {
+    "mtime": 1794483077.3433788,
+    "seen": 1794483100.3508458,
+    "ast_hash": "77767e43213ea867f0b4bc831f621630",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/lib/whiteModel.js": {
+    "mtime": 1794483077.3560278,
+    "seen": 1794483100.3508468,
+    "ast_hash": "3c4c8672ede4239246df4572ed0c01d4",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/main.jsx": {
+    "mtime": 1794483077.3153117,
+    "seen": 1794483100.3508475,
+    "ast_hash": "3b8b030319824291b0d2fd9551839ba4",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/accord/Accord.jsx": {
+    "mtime": 1794483077.4009714,
+    "seen": 1794483100.3508482,
+    "ast_hash": "2960f0f382508df58b54403aa825d7d2",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/admin/Admin.jsx": {
+    "mtime": 1794483077.3790674,
+    "seen": 1794483100.350849,
+    "ast_hash": "489f1d7b6ad6909d2fdaf63237c9aee3",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/admin/Cleanup.jsx": {
+    "mtime": 1794483077.3801754,
+    "seen": 1794483100.3508499,
+    "ast_hash": "0bfa4c4669cd9762b0d0fe2aa59247e1",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/crm/Analytics.jsx": {
+    "mtime": 1794483077.3834653,
+    "seen": 1794483100.3508506,
+    "ast_hash": "ed7739f858642761073e8bd61ab4e43c",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/crm/Booking.jsx": {
+    "mtime": 1794483077.3954158,
+    "seen": 1794483100.3508515,
+    "ast_hash": "b192c021c91ca1289f46292d1e51adac",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/crm/BookingChanges.jsx": {
+    "mtime": 1794483077.399836,
+    "seen": 1794483100.3508523,
+    "ast_hash": "7797545d7911f5705f67f92bcd075c6c",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/crm/Clients.jsx": {
+    "mtime": 1794483077.3867345,
+    "seen": 1794483100.3508532,
+    "ast_hash": "91aee86adfa2d065a7c51bc4bf2e30ba",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/crm/CostSheet.jsx": {
+    "mtime": 1794483077.3966043,
+    "seen": 1794483100.3508542,
+    "ast_hash": "d5c822c0a742ada21ac416eb58aff6ee",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/crm/Dashboard.jsx": {
+    "mtime": 1794483077.3977108,
+    "seen": 1794483100.3508549,
+    "ast_hash": "77c7e5c16856d3dd3b9b22933fe4ae94",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/crm/Documents.jsx": {
+    "mtime": 1794483077.3911083,
+    "seen": 1794483100.3508556,
+    "ast_hash": "5f7481a58d79dbae98884cc4881100a1",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/crm/Interactions.jsx": {
+    "mtime": 1794483077.3889294,
+    "seen": 1794483100.3508565,
+    "ast_hash": "06e3106df7e853f9c364f926a780bf1b",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/crm/Inventory.jsx": {
+    "mtime": 1794483077.3813257,
+    "seen": 1794483100.3508573,
+    "ast_hash": "c9f6509374754ec558c42cd0da32b2c1",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/crm/Issues.jsx": {
+    "mtime": 1794483077.392158,
+    "seen": 1794483100.350858,
+    "ast_hash": "4056af64f0886eda355d0a437a49c3de",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/crm/Leads.jsx": {
+    "mtime": 1794483077.3932645,
+    "seen": 1794483100.3508587,
+    "ast_hash": "0dbbdb2fb9f9688b404b6ac2e515ee0c",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/crm/Messages.jsx": {
+    "mtime": 1794483077.3900592,
+    "seen": 1794483100.3508594,
+    "ast_hash": "9eecc9e683c072d4491a1ec9919ac061",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/crm/Parking.jsx": {
+    "mtime": 1794483077.3824024,
+    "seen": 1794483100.3508604,
+    "ast_hash": "12c492a65dd6c5e792401aaaa98cca69",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/crm/Partners.jsx": {
+    "mtime": 1794483077.3877864,
+    "seen": 1794483100.3508608,
+    "ast_hash": "2912ebb1fea3686621c7fa68ccb5a2c1",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/crm/PaymentForm.jsx": {
+    "mtime": 1794483077.3987653,
+    "seen": 1794483100.3508615,
+    "ast_hash": "3d496b75b7744bd310beff9b2d097a7f",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/crm/Payments.jsx": {
+    "mtime": 1794483077.3846095,
+    "seen": 1794483100.3508623,
+    "ast_hash": "b65e5693b52aa122eedf13439c9e1be0",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/crm/Schedule.jsx": {
+    "mtime": 1794483077.3943622,
+    "seen": 1794483100.3508635,
+    "ast_hash": "3b0bbd52fd7d8b77f5da4580609fb576",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/crm/Statement.jsx": {
+    "mtime": 1794483077.3856971,
+    "seen": 1794483100.3508642,
+    "ast_hash": "9054f1154b3d9cef15149fca07ffe8c5",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/experience/Experience.jsx": {
+    "mtime": 1794483077.4158173,
+    "seen": 1794483100.3508646,
+    "ast_hash": "bd907311a4f2fb72ef8597f0999a25c0",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/hr/HR.jsx": {
+    "mtime": 1794483077.4119306,
+    "seen": 1794483100.3508654,
+    "ast_hash": "8889cc9f8d7d0116a81bb162b4638732",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/kb/KB.jsx": {
+    "mtime": 1794483077.4133534,
+    "seen": 1794483100.350866,
+    "ast_hash": "fb3521fcfec4f8871ba88e6e2ed6d8c2",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/people/People.jsx": {
+    "mtime": 1794483077.408426,
+    "seen": 1794483100.3508673,
+    "ast_hash": "bcc9ceee1a37b54a60b5c753046e5dbd",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/presales/Brochure.jsx": {
+    "mtime": 1794483077.4032962,
+    "seen": 1794483100.3508677,
+    "ast_hash": "d30cd38297adcded901d13e3900411b4",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/presales/BrochureScroll.jsx": {
+    "mtime": 1794483077.4022229,
+    "seen": 1794483100.3508685,
+    "ast_hash": "e0c67ef2eb12a51c266e265d633f5721",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/presales/Showcase.jsx": {
+    "mtime": 1794483077.4045942,
+    "seen": 1794483100.3508692,
+    "ast_hash": "b09e871c2d90f29b39d4e71743450876",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/presales/Viewings.jsx": {
+    "mtime": 1794483077.405945,
+    "seen": 1794483100.3508701,
+    "ast_hash": "92931ee0e17bf7a2212b5513306d27fe",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/reports/Reports.jsx": {
+    "mtime": 1794483077.4146943,
+    "seen": 1794483100.3508708,
+    "ast_hash": "bf0e7577e9e284f44f08660b114af8d7",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/sourcing/Sourcing.jsx": {
+    "mtime": 1794483077.4071014,
+    "seen": 1794483100.3508718,
+    "ast_hash": "33f6e2d7257928f0485f300eb2c02a56",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/modules/vendors/Vendors.jsx": {
+    "mtime": 1794483077.4107313,
+    "seen": 1794483100.3508725,
+    "ast_hash": "1bb4fdba1be444509981667acf8585d3",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/pages/Enrol.jsx": {
+    "mtime": 1794483077.365953,
+    "seen": 1794483100.3508732,
+    "ast_hash": "a1581e7180f72c4e3a66fc0fe6d0dfda",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/pages/Help.jsx": {
+    "mtime": 1794483077.362604,
+    "seen": 1794483100.3508742,
+    "ast_hash": "7bef102e1c0da7797e7b6d3897cae310",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/pages/Home.jsx": {
+    "mtime": 1794483077.3636923,
+    "seen": 1794483100.350875,
+    "ast_hash": "3a112393614a3a261e21f7635f9e4e66",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/pages/Login.jsx": {
+    "mtime": 1794483077.3649008,
+    "seen": 1794483100.3508756,
+    "ast_hash": "4c85904aa3a51c289ce67b35c1a99f9f",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/seed/hrStart.js": {
+    "mtime": 1794483077.3736923,
+    "seen": 1794483100.3508773,
+    "ast_hash": "5a2a34b8a15e054778ecf50b9c7cb9ab",
+    "semantic_hash": ""
+  },
+  "CRM_Application/source/src/seed/ops.js": {
+    "mtime": 1794483077.3725986,
+    "seen": 1794483100.3508778,
+    "ast_hash": "e04e5ae48ca68242cbc88279d08a375e",
+    "semantic_hash": ""
+  },
+  "CRM_Application/tools/experience-bridge.js": {
+    "mtime": 1794483077.3031535,
+    "seen": 1794483100.3508785,
+    "ast_hash": "221c2abd288701411f65712c8d4b0774",
+    "semantic_hash": ""
+  },
+  "CRM_Application/tools/finish-site.mjs": {
+    "mtime": 1794483077.300817,
+    "seen": 1794483100.3508792,
+    "ast_hash": "38b9670a4adcc7827826dc8adf28d0db",
+    "semantic_hash": ""
+  },
+  "CRM_Application/tools/help-videos/demo-data.js": {
+    "mtime": 1794483077.3714423,
+    "seen": 1794483100.35088,
+    "ast_hash": "1083bd1fa3a91d2be9842f1f53ad1ac7",
+    "semantic_hash": ""
+  },
+  "CRM_Application/tools/help-videos/lib.js": {
+    "mtime": 1794483077.3670654,
+    "seen": 1794483100.3508809,
+    "ast_hash": "ca3bb9f1f3a1778dfc3916a1d61a45f3",
+    "semantic_hash": ""
+  },
+  "CRM_Application/tools/help-videos/s-new-lead.js": {
+    "mtime": 1794483077.3704052,
+    "seen": 1794483100.3508816,
+    "ast_hash": "d6a3510099c3117c85b0a29999bc83e2",
+    "semantic_hash": ""
+  },
+  "CRM_Application/tools/help-videos/scenes.js": {
+    "mtime": 1794483077.368142,
+    "seen": 1794483100.350882,
+    "ast_hash": "c53e67be2a22cd2367456c96cae111f5",
+    "semantic_hash": ""
+  },
+  "CRM_Application/tools/help-videos/vid.js": {
+    "mtime": 1794483077.3693175,
+    "seen": 1794483100.3508828,
+    "ast_hash": "11ddd8a7e6b45d1d159fe74c6f32539e",
+    "semantic_hash": ""
+  },
+  "CRM_Application/tools/parking/bg.py": {
+    "mtime": 1794483077.304865,
+    "seen": 1794483100.3508832,
+    "ast_hash": "0396fc1a82f6a25534db16c09ce3d2d8",
+    "semantic_hash": ""
+  },
+  "CRM_Application/tools/parking/car.py": {
+    "mtime": 1794483077.3084035,
+    "seen": 1794483100.3508842,
+    "ast_hash": "65f520e0de9e2f2e771c2813ff5dec0a",
+    "semantic_hash": ""
+  },
+  "CRM_Application/tools/parking/emit.py": {
+    "mtime": 1794483077.311744,
+    "seen": 1794483100.350885,
+    "ast_hash": "68b0aaf8d14ae648f91254256629b7de",
+    "semantic_hash": ""
+  },
+  "CRM_Application/tools/parking/inv.py": {
+    "mtime": 1794483077.306042,
+    "seen": 1794483100.3508856,
+    "ast_hash": "bfb8bd55d131380967636ac41e4185a1",
+    "semantic_hash": ""
+  },
+  "CRM_Application/tools/parking/orient.py": {
+    "mtime": 1794483077.3106165,
+    "seen": 1794483100.350886,
+    "ast_hash": "129300901c75df4efa64e648bd96930d",
+    "semantic_hash": ""
+  },
+  "CRM_Application/tools/parking/pair.py": {
+    "mtime": 1794483077.3128824,
+    "seen": 1794483100.3508868,
+    "ast_hash": "71d3ccbf206fd9b57ae3773f18dfe5f2",
+    "semantic_hash": ""
+  },
+  "CRM_Application/tools/parking/read.mjs": {
+    "mtime": 1794483077.3095033,
+    "seen": 1794483100.3508878,
+    "ast_hash": "4426f584b19ed46773c8b5a8fa3596c0",
+    "semantic_hash": ""
+  },
+  "CRM_Application/tools/parking/render.py": {
+    "mtime": 1794483077.3071654,
+    "seen": 1794483100.3508883,
+    "ast_hash": "5a0b529b41da6b7591764907543e342a",
+    "semantic_hash": ""
+  },
+  "CRM_Application/tools/patch-experience.mjs": {
+    "mtime": 1794483077.301966,
+    "seen": 1794483100.350889,
+    "ast_hash": "f94e4336440bbf46305307621a9d9034",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/engine/config.json": {
+    "mtime": 1794483077.4198802,
+    "seen": 1794483100.3508897,
+    "ast_hash": "7f4ed59e7a41105a3861700478209442",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/engine/seed.mjs": {
+    "mtime": 1794483077.4198678,
+    "seen": 1794483100.3508904,
+    "ast_hash": "1b20ce799a1542a5d8dbc86553ae45d8",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/engine/server.mjs": {
+    "mtime": 1794483077.4198887,
+    "seen": 1794483100.3508914,
+    "ast_hash": "67b97ef5615045910c1ef51005937259",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/package.json": {
+    "mtime": 1794483077.4200974,
+    "seen": 1794483100.350892,
+    "ast_hash": "95c82e0553d13b71b214c380dbe6ce17",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/src/api.js": {
+    "mtime": 1794483077.4200644,
+    "seen": 1794483100.3508928,
+    "ast_hash": "280b965f3e2b0edb4a8c0605fde33c79",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/src/components/ImageDrop.jsx": {
+    "mtime": 1794483077.4200222,
+    "seen": 1794483100.3508935,
+    "ast_hash": "5e7a1663be4489a0da1da03b6cfb2f81",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/src/components/Layout.jsx": {
+    "mtime": 1794483077.4200144,
+    "seen": 1794483100.3508945,
+    "ast_hash": "20b97ec6a18d6a8839e6b87dd730ac61",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/src/components/ui.jsx": {
+    "mtime": 1794483077.4200327,
+    "seen": 1794483100.3508952,
+    "ast_hash": "41fc9df2fc5753a6c507f4235bb88015",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/src/main.jsx": {
+    "mtime": 1794483077.4200714,
+    "seen": 1794483100.350896,
+    "ast_hash": "112d5c9f302f486c86f40c9ef6d0ceb0",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/src/pages/Engine.jsx": {
+    "mtime": 1794483077.419996,
+    "seen": 1794483100.3508966,
+    "ast_hash": "b114738704c157a90f868dccef709d0b",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/src/pages/Jobs.jsx": {
+    "mtime": 1794483077.4199896,
+    "seen": 1794483100.3508973,
+    "ast_hash": "abacb5d92265454d14e4656a8f5ea918",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/src/pages/Overview.jsx": {
+    "mtime": 1794483077.4199612,
+    "seen": 1794483100.350898,
+    "ast_hash": "df32f2376caebb02b47414894879a42f",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/src/pages/Project.jsx": {
+    "mtime": 1794483077.4199476,
+    "seen": 1794483100.3508987,
+    "ast_hash": "ef8e7492f51863af9225cf6709f9b3f6",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/src/pages/Projects.jsx": {
+    "mtime": 1794483077.4199698,
+    "seen": 1794483100.3508995,
+    "ast_hash": "dfcd6cdf0e57af57b986971203a61ec8",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/src/pages/Soon.jsx": {
+    "mtime": 1794483077.419977,
+    "seen": 1794483100.3509002,
+    "ast_hash": "f4c0800794adf3350e962e3697f47b06",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/src/pages/Vocabulary.jsx": {
+    "mtime": 1794483077.4199831,
+    "seen": 1794483100.350901,
+    "ast_hash": "e3d45c4d60cdc62e1f95629447cbb0e7",
+    "semantic_hash": ""
+  },
+  "CRM_Application/ACCORD_CHANGES_2026-11-07.md": {
+    "mtime": 1794483077.2936723,
+    "seen": 1794483100.3509016,
+    "ast_hash": "ba375e3fd7d9aac2d5aa417cec2813bd",
+    "semantic_hash": ""
+  },
+  "CRM_Application/ACCORD_CHANGES_2026-11-10.md": {
+    "mtime": 1794483077.295999,
+    "seen": 1794483100.3509026,
+    "ast_hash": "adfbe29d7a13d0185d7e9e7fdfe71e62",
+    "semantic_hash": ""
+  },
+  "CRM_Application/ACCORD_CHANGES_2026-11-12.md": {
+    "mtime": 1794483077.2910593,
+    "seen": 1794483100.3509033,
+    "ast_hash": "186354ad6a8f88f8b9f17df91cac4080",
+    "semantic_hash": ""
+  },
+  "CRM_Application/ACCORD_CHANGES_2026-11-12_PEOPLE.md": {
+    "mtime": 1794483077.2984586,
+    "seen": 1794483100.3509037,
+    "ast_hash": "cf1db81e9b1145c7d8919019e1c26d10",
+    "semantic_hash": ""
+  },
+  "CRM_Application/ACCORD_CHANGES_2026-11-12_SPEED.md": {
+    "mtime": 1794483077.2923481,
+    "seen": 1794483100.3509045,
+    "ast_hash": "a949db22616450d3680b3d87ded983d0",
+    "semantic_hash": ""
+  },
+  "CRM_Application/ACCORD_CHANGES_2026-11-12_USERS.md": {
+    "mtime": 1794483077.2896285,
+    "seen": 1794483100.3509054,
+    "ast_hash": "b62744d618db9155cbc2f9ced09ea2dd",
+    "semantic_hash": ""
+  },
+  "CRM_Application/BACKEND.md": {
+    "mtime": 1794483077.297277,
+    "seen": 1794483100.3509061,
+    "ast_hash": "55f259d5d0bc1e14095709e63da7adba",
+    "semantic_hash": ""
+  },
+  "CRM_Application/README.md": {
+    "mtime": 1794483077.294806,
+    "seen": 1794483100.3509068,
+    "ast_hash": "72b4c391e9eee95dbd173257ab61800a",
+    "semantic_hash": ""
+  },
+  "Design_Model/DESIGN_ENGINE_SPEC.md": {
+    "mtime": 1794483077.4768958,
+    "seen": 1794483100.3509076,
+    "ast_hash": "63b16bf4ddd2cee757491dc77c2abddf",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/README.md": {
+    "mtime": 1794483077.4200892,
+    "seen": 1794483100.3509085,
+    "ast_hash": "a7cc733564350837b2b95da99cff2030",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/engine/prompts/analyse-reference.md": {
+    "mtime": 1794483077.419803,
+    "seen": 1794483100.3509092,
+    "ast_hash": "39a75f1202a02b57b26a5046cafbe485",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/engine/prompts/free.md": {
+    "mtime": 1794483077.4198575,
+    "seen": 1794483100.3509097,
+    "ast_hash": "a9db1a5418d603b71e082c45c6b64dc8",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/engine/prompts/ping.md": {
+    "mtime": 1794483077.4197884,
+    "seen": 1794483100.3509104,
+    "ast_hash": "49d2e9950c3356f611d7c0d85330901f",
+    "semantic_hash": ""
+  },
+  "Design_Model/app/engine/prompts/render-room.md": {
+    "mtime": 1794483077.4198112,
+    "seen": 1794483100.3509111,
+    "ast_hash": "f91e9a02663ea30f45d8bbd839eebc45",
+    "semantic_hash": ""
+  }
+}
