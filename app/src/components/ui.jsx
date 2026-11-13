@@ -1,7 +1,7 @@
 // The Accord UI kit, same class names as CRM_Application/source/src/components/ui.jsx, so modules move across on merge.
 import React, { useEffect, useState, createContext, useContext, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { engineUrl, fix } from '../api.js'
+import { engineUrl, fix, headers, ENGINE } from '../api.js'
 
 export const cx = (...a) => a.filter(Boolean).join(' ')
 export function Page({ title, subtitle, actions, back, children }) {
@@ -43,8 +43,8 @@ export const useNotify = () => useContext(ToastCtx)
 // Load from the engine, with reload; polls when `every` is set.
 export function useLoad(url, every) {
   const [state, set] = useState({ data: null, error: null, loading: true })
-  const load = useCallback(() => fetch(engineUrl(url)).then(async (r) => { const j = fix(await r.json()); if (!r.ok) throw new Error(j.error || 'Engine error'); set({ data: j, error: null, loading: false }) })
-    .catch((e) => set((s) => ({ ...s, error: /fetch/i.test(e.message) ? 'The engine is not running on this PC. Start it with Start Design Engine.cmd' : e.message, loading: false }))), [url])
+  const load = useCallback(() => fetch(engineUrl(url), { headers: headers() }).then(async (r) => { const j = fix(await r.json()); if (r.status === 401) { const e = new Error('Access key needed'); e.needKey = true; throw e } if (!r.ok) throw new Error(j.error || 'Engine error'); set({ data: j, error: null, loading: false }) })
+    .catch((e) => set((s) => ({ ...s, error: e.needKey ? 'Access key needed' : /fetch/i.test(e.message) ? `The Design Engine is not reachable${ENGINE ? ' at ' + ENGINE : ''}. Start it on the server laptop.` : e.message, needKey: !!e.needKey, loading: false }))), [url])
   useEffect(() => { load(); if (!every) return; const x = setInterval(() => { if (!document.hidden) load() }, every); return () => clearInterval(x) }, [load, every])
   return { ...state, reload: load }
 }

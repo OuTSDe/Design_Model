@@ -59,3 +59,16 @@ One-time set-up:
 1. On GitHub: Settings → Pages → Source: **GitHub Actions**.
 2. On the design PC: add the Pages address (origin only, e.g. `https://outsde.github.io`) to `allowedOrigins` in `app/engine/config.json`, then **Update and restart** the engine. Other websites are refused.
 3. Use Chrome or Edge for the Pages site (they allow a public page to reach the engine on this PC; the engine answers the Private Network Access check).
+
+## One laptop as the team's server
+
+Run Codex and the data on ONE laptop, and let everyone else use it from theirs.
+
+1. On the server laptop (Codex CLI installed and signed in, Google Drive for desktop syncing this folder): double-click **`Start Design Server.cmd`** instead of `Start Design Engine.cmd`. Keep it plugged in and the window open (the launcher turns sleep off on mains power). If Windows asks, allow Node.js on **Private networks**.
+2. The window shows the **Team address** (e.g. `http://192.168.1.20:4317`) and the **Access key**. Both are also on the Engine and Codex page of that laptop.
+3. On the other laptops (same Wi-Fi or office network): open the Team address in a browser, enter the access key once. Everything is there: Space vocabulary, projects, asset library, vendors, Codex jobs. Codex runs on the server laptop.
+4. The key is kept in `Design_Model/.engine/access-key.txt`. For a new key, delete that file and restart; everyone enters the new key once.
+
+**From outside the office, or from the GitHub page:** a public https page (GitHub Pages) is not allowed to call a plain `http://192.168…` address. Use [Tailscale](https://tailscale.com) (free for small teams, private to your team):
+install it on the server laptop and on each team laptop, sign in with the same account, then on the server run `tailscale serve --bg 4317`.
+It prints an https address like `https://design-server.tail1234.ts.net`. On the GitHub page (or anywhere), Connect → Engine address: that https address, Access key: the key.

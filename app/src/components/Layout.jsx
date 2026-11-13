@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useLoad } from './ui.jsx'
+import Connect from './Connect.jsx'
 
 const NAV = [
   { label: 'Design engine', items: [['/', 'Overview', '01', true], ['/projects', 'Projects', '02'], ['/vocabulary', 'Space vocabulary', '03'], ['/jobs', 'Codex jobs', '04']] },
@@ -29,8 +30,7 @@ export default function Layout() {
     <div className="main">
       <header className="top"><span className="crumb">Accord Design · {crumb}</span>
         <div className="top-right"><span className="label" style={{ color: 'var(--m-accord)' }}>OuTSDe · separate build, not merged</span></div></header>
-      {health.error && <div className="content" style={{ paddingBottom: 0 }}><div className="note">{health.error}. In <span className="mono">Design_Model/app</span>, run <span className="mono">npm install</span> once, then <span className="mono">npm run dev</span>.</div></div>}
-      <Outlet />
+      {health.error ? <Connect error={health.error} needKey={health.needKey} /> : <Outlet />}
     </div>
   </div>
 }

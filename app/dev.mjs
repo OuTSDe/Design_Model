@@ -48,11 +48,11 @@ log('--- start ' + process.version + ' in ' + here)
 const kids = new Map()
 let crashes = 0
 const run = (name, args) => {
-  const p = spawn(process.execPath, args, { cwd: here, stdio: ['inherit', 'pipe', 'pipe'] })
+  const p = spawn(process.execPath, args, { cwd: here, stdio: ['inherit', 'pipe', 'pipe'], env: process.env })
   const tag = (d) => d.toString().split(/\r?\n/).filter(Boolean).forEach((l) => log(`[${name}] ${l}`))
   p.stdout.on('data', tag); p.stderr.on('data', tag)
   p.on('exit', (c) => {
-    if (name === 'engine' && c === 75) { try { syncFromDrive(); log('Updated from Design_Model\\app.') } catch (e) { log('Update failed: ' + e.stack) } return run('engine', args) }
+    if (name === 'engine' && c === 75) { try { syncFromDrive(); log('Updated from Design_Model\\app.'); if (process.argv.includes('--server')) buildUI() } catch (e) { log('Update failed: ' + e.stack) } return run('engine', args) }
     log(`[${name}] stopped (${c})`)
     // the engine crashed: keep the UI up and try again a few times (a fix in Drive is picked up on each try)
     if (name === 'engine' && crashes++ < 5) { setTimeout(() => { try { syncFromDrive() } catch { /* */ } run('engine', args) }, 5000); return }
@@ -60,6 +60,16 @@ const run = (name, args) => {
   })
   kids.set(name, p)
 }
-run('engine', ['engine/server.mjs'])
-run('ui', [path.join('node_modules', 'vite', 'bin', 'vite.js')])
+// --server (Start Design Server.cmd): this laptop serves the team. The UI is built once and served by the engine itself
+// on port 4317 to the whole network (DESIGN_HOST=0.0.0.0); after "Update and restart" the UI is rebuilt too.
+const SERVER = process.argv.includes('--server')
+const buildUI = () => { const r = spawnSync(process.execPath, [path.join('node_modules', 'vite', 'bin', 'vite.js'), 'build'], { cwd: here, stdio: 'inherit' }); if (r.status !== 0) log('UI build failed') }
+if (SERVER) {
+  process.env.DESIGN_HOST = process.env.DESIGN_HOST || '0.0.0.0'
+  log('Server mode: building the UI…'); buildUI()
+  run('engine', ['engine/server.mjs', '--serve'])
+} else {
+  run('engine', ['engine/server.mjs'])
+  run('ui', [path.join('node_modules', 'vite', 'bin', 'vite.js')])
+}
 process.on('SIGINT', () => { kids.forEach((k) => k.kill()); process.exit(0) })

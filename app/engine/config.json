@@ -19,6 +19,8 @@
     "localWorkdir": true
   },
   "maxParallelJobs": 2,
-  "allowedOrigins": [],
+  "allowedOrigins": [
+    "https://outsde.github.io"
+  ],
   "_allowedOrigins_help": "Add the GitHub Pages address of the Design Engine here, e.g. https://outsde.github.io (origin only, no path)."
 }

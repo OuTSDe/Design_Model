@@ -44,6 +44,9 @@ Updated 12 Nov 2026.
 - Built (13 Nov, engine 0.3.0): Codex pipeline per room = find-principal (Pinterest) → research-room → find-references (Pinterest) → compose-moodboard → vendor-research → make-blank → render-room; style-references + style-brief for the vocabulary; Library and Vendors pages; autorun.json, resume, retry, Update and restart, console.log. See RUN_NOTES.md.
 - Next: mood board editor (board-*.json layers), node view for renders, real white models from Rhino.
 
+## Server mode (engine 0.5)
+- `Start Design Server.cmd` → dev.mjs --server: builds the UI, engine serves it on 0.0.0.0:4317. Non-local requests need `accessKey` (config.json; generated on first server start) via header x-engine-key or ?k=. Connect screen in the UI stores engine address + key in localStorage. Remote/https (GitHub Pages) → Tailscale `tailscale serve --bg 4317`.
+
 ## GitHub
 - Repo root = Design_Model. Workflows: .github/workflows/design-engine-ci.yml (check + smoke test) and design-engine-pages.yml (UI to Pages, VITE_ENGINE_URL=http://localhost:4317). Engine CORS only for config.allowedOrigins. Data folders are gitignored.
 

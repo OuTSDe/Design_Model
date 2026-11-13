@@ -389,14 +389,30 @@ const app = express()
 // Who may talk to the engine from a browser: the app itself, and the GitHub Pages copy of the UI listed in config.allowedOrigins.
 // Other websites are refused, so no outside page can start Codex jobs or read the files on this PC.
 const ORIGINS = new Set(['http://localhost:5174', 'http://127.0.0.1:5174', 'http://localhost:4317', ...(CFG.allowedOrigins || [])].map((o) => o.replace(/\/$/, '')))
+// Server mode: DESIGN_HOST=0.0.0.0 (Start Design Server.cmd) lets the other laptops reach this one. Then every request that
+// does not come from this laptop itself must carry the access key (header x-engine-key, or ?k= on image links).
+const HOST = process.env.DESIGN_HOST || CFG.host || '127.0.0.1'
+const SERVER = HOST !== '127.0.0.1' && HOST !== 'localhost'
+// the key lives in Design_Model/.engine/access-key.txt (in Drive), so it stays the same across restarts and updates;
+// accessKey in config.json, if set, wins. Delete the file to get a new key.
+const KEYF = path.join(DIR.state, 'access-key.txt')
+if (!CFG.accessKey && fs.existsSync(KEYF)) CFG.accessKey = fs.readFileSync(KEYF, 'utf8').trim()
+if (SERVER && !CFG.accessKey) { CFG.accessKey = Array.from({ length: 4 }, () => Math.random().toString(36).slice(2, 6)).join('-'); ensure(DIR.state); fs.writeFileSync(KEYF, CFG.accessKey) }
+const isLocal = (req) => ['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(req.socket.remoteAddress) && !req.headers['x-forwarded-for'] && !req.headers['tailscale-user-login']
+const sameOrigin = (req, o) => { try { return new URL(o).host === req.headers.host } catch { return false } }
 app.use((req, res, next) => {
   const o = req.headers.origin
-  if (o && ORIGINS.has(o)) {
+  if (o && (ORIGINS.has(o) || sameOrigin(req, o))) {
     res.setHeader('Access-Control-Allow-Origin', o); res.setHeader('Vary', 'Origin')
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS'); res.setHeader('Access-Control-Allow-Headers', 'content-type')
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS'); res.setHeader('Access-Control-Allow-Headers', 'content-type, x-engine-key')
     res.setHeader('Access-Control-Allow-Private-Network', 'true') // Chrome: a public page (GitHub Pages) calling this PC
   } else if (o && req.path.startsWith('/api') && req.method !== 'GET') return res.status(403).json({ error: `This page (${o}) is not allowed to use the engine. Add it to allowedOrigins in engine/config.json.` })
-  if (req.method === 'OPTIONS') return res.sendStatus(o && ORIGINS.has(o) ? 204 : 403)
+  if (req.method === 'OPTIONS') return res.sendStatus(o && (ORIGINS.has(o) || sameOrigin(req, o)) ? 204 : 403)
+  // access key for everyone who is not on this laptop (the built UI itself, /index.html and /assets, stays open so the login screen loads)
+  if (CFG.accessKey && !isLocal(req) && (req.path.startsWith('/api') || req.path.startsWith('/files'))) {
+    const k = req.headers['x-engine-key'] || req.query.k
+    if (k !== CFG.accessKey) return res.status(401).json({ error: 'Access key needed', needKey: true })
+  }
   next()
 })
 app.use(express.json({ limit: '4mb' }))
@@ -405,7 +421,7 @@ const h = (fn) => async (req, res) => { try { const v = await fn(req, res); if (
 
 app.use('/files', express.static(ROOT, { dotfiles: 'deny', index: false }))
 
-app.get('/api/health', h(async () => ({ engine: '0.4.2', root: ROOT, codexCommand: `${CFG.codex.bin} ${CFG.codex.args.join(' ')} ${CFG.codex.imageFlag} <image> … ${CFG.codex.promptFromStdin !== false ? '-' : '"<prompt>"'}`, export: fs.existsSync(EXPORT) ? EXPORT : null, codex: await codexCheck(), jobs: { running: running.size, queued: jobs.filter((j) => j.status === 'queued').length } })))
+app.get('/api/health', h(async () => ({ engine: '0.5.0', root: ROOT, codexCommand: `${CFG.codex.bin} ${CFG.codex.args.join(' ')} ${CFG.codex.imageFlag} <image> … ${CFG.codex.promptFromStdin !== false ? '-' : '"<prompt>"'}`, export: fs.existsSync(EXPORT) ? EXPORT : null, codex: await codexCheck(), jobs: { running: running.size, queued: jobs.filter((j) => j.status === 'queued').length } })))
 
 app.get('/api/accord', h(() => {
   const a = readAccord(); const projects = listProjects()
@@ -545,8 +561,17 @@ app.get('/api/summary', h(() => { const c = {}; jobs.forEach((j) => { c[j.status
   const active = jobs.filter((j) => j.status === 'running').map((j) => ({ id: j.id, label: j.label, room: j.roomId, project: j.projectId, startedAt: j.startedAt }))
   return { counts: c, pausedUntil: pausedUntil > Date.now() ? new Date(pausedUntil).toISOString() : null, pauseReason, active, recentFailed: jobs.filter((j) => j.status === 'failed').slice(0, 8).map((j) => ({ id: j.id, label: j.label, room: j.roomId, tail: (j.log || '').slice(-300) })) } }))
 
-app.listen(CFG.port, () => {
-  console.log(`Accord Design Engine on http://localhost:${CFG.port}`)
+app.get('/api/server', h((req) => { // how to reach this engine from the other laptops (the key only for this laptop's own screen)
+  const ips = Object.values(os.networkInterfaces()).flat().filter((i) => i && i.family === 'IPv4' && !i.internal).map((i) => i.address)
+  return { server: SERVER, host: HOST, port: CFG.port, addresses: ips.map((ip) => `http://${ip}:${CFG.port}`), accessKey: isLocal(req) ? CFG.accessKey || '' : undefined, allowedOrigins: [...ORIGINS] }
+}))
+
+app.listen(CFG.port, HOST, () => {
+  console.log(`Accord Design Engine on http://localhost:${CFG.port}${SERVER ? '  (server mode: other laptops can connect)' : ''}`)
+  if (SERVER) {
+    Object.values(os.networkInterfaces()).flat().filter((i) => i && i.family === 'IPv4' && !i.internal).forEach((i) => console.log(`  Team address: http://${i.address}:${CFG.port}`))
+    console.log(`  Access key:   ${CFG.accessKey}   (give this to the team; a new one: delete .engine/access-key.txt and restart)`)
+  }
   console.log(`  Design_Model: ${ROOT}`)
   console.log(`  Accord export: ${fs.existsSync(EXPORT) ? EXPORT : 'NOT FOUND (' + EXPORT + ')'}`)
   pump()
