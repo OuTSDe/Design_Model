@@ -47,6 +47,14 @@ Updated 12 Nov 2026.
 ## Server mode (engine 0.5)
 - `Start Design Server.cmd` → dev.mjs --server: builds the UI, engine serves it on 0.0.0.0:4317. Non-local requests need `accessKey` (config.json; generated on first server start) via header x-engine-key or ?k=. Connect screen in the UI stores engine address + key in localStorage. Remote/https (GitHub Pages) → Tailscale `tailscale serve --bg 4317`.
 
+## Accord CRM test copy + design link (engine 0.6, 13 Nov)
+- `Design_Model/CRM_Application` = Sanath's copy of the CRM (dummy, for testing the whole workflow before merging into the real CRM after his approval). Engine serves its `site/` at `<server>/crm/` and acts as its backend (`engine/crm.mjs`, POST /crm-api: ping, seed, login, pull, push, upload, punch, enrol…). Data: `Design_Model/CRM_Test_Data/db.json` + `Files/`. Never served via /files (403), gitignored. First visit seeds the CRM's starting set + design-safe test bookings/sessions from the Accord export. Sign-in = real flow (Accord2026 once → authenticator).
+- Design link: CRM Accord project → tab "Design engine" → POST /api/crm/link (booking facts without money, latest experience session → suggested style, rooms) → engine project with crmId. Run rooms/steps via /api/pipeline. Renders → "Use in Accord" (CRM room renders). Products → GET /api/crm/boq → BOQ package "Design engine picks". "Start project" sends to the engine at once.
+- Vendors: every CRM vendor save (and the public onboarding form) is mirrored into Vendors/ (crm_id; no bank/PAN/GST). Engine vendors without crm_id = "Found by Codex" on the CRM vendor page. Vendor detail shows its design library.
+- Auth: crm_t cookie (CRM sign-in) or de_k cookie (engine key) count as engine access for /api and /files.
+- Codex queue: Clear queue / Stop all / Delete finished (POST /api/queue/clear {running}, DELETE /api/jobs/:id, POST /api/jobs-clear). Cancel = taskkill /T, ends as cancelled (no retry).
+- CRM source changes are marked "13 Nov (test copy)": lib/engine.js (new), lib/store.jsx (auto-seed, testBackend), Layout.jsx (banner), accord/Accord.jsx (DesignEngine tab), vendors/Vendors.jsx (FoundByCodex, DesignLibrary). Rebuild: `cd CRM_Application/source && npm run build:site`.
+
 ## GitHub
 - Repo root = Design_Model. Workflows: .github/workflows/design-engine-ci.yml (check + smoke test) and design-engine-pages.yml (UI to Pages, VITE_ENGINE_URL=http://localhost:4317). Engine CORS only for config.allowedOrigins. Data folders are gitignored.
 

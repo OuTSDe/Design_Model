@@ -81,3 +81,18 @@ The iPad is a client, not the server: iPadOS can't run Node or the Codex CLI. Th
 - **Anywhere else:** install the Tailscale app on the iPad (same account as the server laptop) and open the `https://…ts.net` address. Use this https address with the GitHub page too, because Safari blocks an https page from calling an `http://` address.
 - **Install as an app:** in Safari, tap Share → **Add to Home Screen**. It opens full screen like an app. Enter the key once more inside the installed app; it keeps its own storage.
 - Uploads from the iPad (Photos or Camera) go to the server and are saved in the Drive. Delete buttons on images are always visible on touch screens.
+
+## The Accord CRM test copy (whole workflow in one place)
+
+`Design_Model\CRM_Application` is a copy of Accord for testing the design workflow end to end. The real Accord is not touched. The server runs it:
+
+1. Start the server (`Start Design Server.cmd`) and open **`<Team address>/crm/`**, on any laptop or the iPad.
+2. The first visit sets up the test database in `Design_Model\CRM_Test_Data`. It holds the team, the residences, the vendors, the sample project, and the bookings and Accord experience sessions from the Accord export. The export copy has no contact details or money.
+3. Sign in as yourself with the temporary password **Accord2026**, link your authenticator app, punch in. It works like the real Accord.
+4. The flow:
+   - **Survey:** Accord Design → Accord experience runs the experience with the buyer. Their session is saved to the test database.
+   - **Start project:** Accord Design → Projects and BOQ → *Ready for design* → **Start project**. The project goes to the engine at once, with the residence, the brief and the experience session, which suggests a style.
+   - **Design engine tab:** choose the style (whole residence or per room), then run Codex on a room (**Run whole room**, or from any step). Mood boards and renders appear here. **Use in Accord** puts a render on the Accord room. **Products for the BOQ → Add all** adds lines in the package "Design engine picks".
+   - **Vendors:** every vendor in the directory and every onboarding form is copied into the engine's vendor library, without bank, PAN or GST numbers. Vendors Codex finds show under **Found by Codex** for review. Each vendor page shows its design library.
+
+Everything is saved in the Drive, so every device sees the same data. To start the test over, stop the server and rename `CRM_Test_Data`.

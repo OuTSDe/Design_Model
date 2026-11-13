@@ -5,6 +5,9 @@ Library/
 Vendors/
 .engine/
 Meeting_Log/
+# the dummy CRM (its own repository, OuTSDe/CRM_Application) and its test database: accounts and client files
+CRM_Application/
+CRM_Test_Data/
 Vocabulary/styles/*/render-ref/
 Vocabulary/styles/*/moodboard-ref/
 Vocabulary/styles/*/candidates/

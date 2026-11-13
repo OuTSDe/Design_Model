@@ -173,10 +173,10 @@ export function JobRow({ j, onChange, showWhere }) {
   const notify = useNotify(); const [open, setOpen] = useState(false); const [full, setFull] = useState(null)
   const tone = { done: 'good', failed: 'bad', running: 'warn', queued: 'info', cancelled: '' }[j.status]
   const toggle = async () => { if (!open) { try { setFull(await api.get('/api/jobs/' + j.id)) } catch (e) { notify(e.message, 'bad') } } setOpen(!open) }
-  const act = async (a) => { try { await api.post(`/api/jobs/${j.id}/${a}`); onChange?.(); notify(a === 'rerun' ? 'Sent to Codex again' : 'Cancelled') } catch (e) { notify(e.message, 'bad') } }
+  const act = async (a) => { try { if (a === 'delete') await api.del('/api/jobs/' + j.id); else await api.post(`/api/jobs/${j.id}/${a}`); onChange?.(); notify({ rerun: 'Sent to Codex again', cancel: 'Cancelled', delete: 'Job deleted' }[a]) } catch (e) { notify(e.message, 'bad') } }
   return <div className="job"><div className="check-row" style={{ cursor: 'pointer' }} onClick={toggle}>
     <span><Badge tone={tone}>{j.status}</Badge> <b>{j.label || j.type}</b> <span className="small muted">{showWhere && j.cwd + ' · '}{dt(j.createdAt)}{j.output ? ' → ' + j.output : ''}</span></span>
-    <span className="row gap-s" onClick={(e) => e.stopPropagation()}>{['queued', 'running'].includes(j.status) ? <Button size="sm" variant="ghost" onClick={() => act('cancel')}>Cancel</Button> : <Button size="sm" variant="ghost" onClick={() => act('rerun')}>Re-run</Button>}</span></div>
+    <span className="row gap-s" onClick={(e) => e.stopPropagation()}>{['queued', 'running'].includes(j.status) ? <Button size="sm" variant="ghost" onClick={() => act('cancel')}>Cancel</Button> : <><Button size="sm" variant="ghost" onClick={() => act('rerun')}>Re-run</Button><Button size="sm" variant="ghost" onClick={() => act('delete')}>Delete</Button></>}</span></div>
     {open && full && <div className="job-detail">{j.status === 'failed' && <p className="small muted" style={{ marginTop: 0 }}>This record keeps the command it ran with. Re-run makes a new job with the engine's current settings.</p>}<div className="label">Command</div><pre>{full.command || '(not started)'}</pre><div className="label">Prompt</div><pre>{full.prompt}</pre><div className="label">Codex output</div><pre>{full.log || '(nothing yet)'}</pre></div>}
   </div>
 }

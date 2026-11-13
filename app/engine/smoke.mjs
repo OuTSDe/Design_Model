@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url'
 
 const here = path.dirname(fileURLToPath(import.meta.url))
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'design-model-'))
-const B = 'http://localhost:4317'
+const B = 'http://127.0.0.1:4317'
 let failed = 0
 const ok = (cond, msg) => { console.log(`${cond ? 'ok  ' : 'FAIL'} ${msg}`); if (!cond) failed++ }
 const j = async (url, opt = {}) => { const r = await fetch(B + url, { ...opt, headers: { 'content-type': 'application/json', ...(opt.headers || {}) } }); return { status: r.status, body: await r.json().catch(() => ({})) } }
@@ -20,6 +20,7 @@ const stop = (code) => { engine.kill(); fs.rmSync(tmp, { recursive: true, force:
 setTimeout(() => { console.log('timed out\n' + out); stop(1) }, 60000)
 
 for (let i = 0; i < 40 && !/Design Engine on/.test(out); i++) await new Promise((r) => setTimeout(r, 250))
+for (let i = 0; i < 40; i++) { try { if ((await fetch(B + '/api/health')).ok) break } catch { /* not listening yet */ } await new Promise((r) => setTimeout(r, 250)) }
 try {
   const h = await j('/api/health'); ok(h.status === 200 && h.body.engine, `engine answers (${h.body.engine})`)
   const v = await j('/api/vocabulary'); ok(Array.isArray(v.body) && v.body.length >= 13, `vocabulary seeded (${v.body.length} styles)`)
@@ -40,6 +41,23 @@ try {
   const vl = await j('/api/vendors'); ok(vl.body.find((x) => x.id === 'smoke-test-vendor')?.assetCount === 1, 'vendor library counts the asset')
   const q = await j(`/api/assets/${a.body.id}/codex`, { method: 'POST', body: JSON.stringify({ kind: 'tag' }) }); ok(q.body.id, 'Codex tag job queued')
   const jobs = await j('/api/jobs'); ok(jobs.body.some((x) => x.type === 'asset-tag'), 'job listed')
+  const cq = await j('/api/queue/clear', { method: 'POST', body: '{"running":true}' }); ok(cq.status === 200 && typeof cq.body.waiting === 'number', `queue cleared (${cq.body.waiting} waiting, ${cq.body.stopped} stopped)`)
+  await new Promise((r) => setTimeout(r, 1500))
+  const after = await j('/api/jobs'); ok(!after.body.some((x) => x.status === 'queued'), 'nothing left waiting')
+  const dc = await j('/api/jobs-clear', { method: 'POST', body: '{}' }); ok(dc.status === 200 && dc.body.removed >= 1, `finished job records deleted (${dc.body.removed})`)
+  // the test copy of Accord CRM (engine/crm.mjs)
+  const crm = (body) => fetch(B + '/crm-api', { method: 'POST', headers: { 'content-type': 'text/plain' }, body: JSON.stringify(body) }).then((r) => r.json())
+  ok((await crm({ action: 'ping' })).empty === true, 'test CRM starts empty')
+  await crm({ action: 'seed', db: { settings: [{ id: 'main', authMode: 'password' }], users: [{ id: 'U-1', username: 'tester', name: 'Tester', appRole: 'admin' }], vendors: [{ id: 'V-001', name: 'Smoke Stone Co', city: 'Mangaluru', category: 'Stone', status: 'Approved', bankAccount: '123456' }] } })
+  const li = await crm({ action: 'login', username: 'tester', password: 'Accord2026' }); ok(li.token && li.user?.appRole === 'admin', 'test CRM sign-in with the temporary password')
+  const pl = await crm({ action: 'pull', token: li.token }); ok(pl.db?.users?.length === 1 && !('pwHash' in pl.db.users[0]), 'pull sends the data without sign-in secrets')
+  await crm({ action: 'push', token: li.token, ops: [{ coll: 'projects', op: 'upsert', rec: { id: 'PR-009', name: 'Smoke project' }, isNew: true }] })
+  await new Promise((r) => setTimeout(r, 800))
+  ok(JSON.parse(fs.readFileSync(path.join(tmp, 'CRM_Test_Data', 'db.json'), 'utf8')).projects?.some((x) => x.id === 'PR-009'), 'test CRM saves to CRM_Test_Data')
+  const mv = (await j('/api/vendors')).body.find((x) => x.crm_id === 'V-001'); ok(mv && !JSON.stringify(mv).includes('123456'), 'directory vendor mirrored to the engine, without bank details')
+  const lk = await j('/api/crm/link', { method: 'POST', body: JSON.stringify({ crm: { id: 'PR-009', name: 'Smoke project' }, facts: { unitNo: '101', name: 'Smoke Buyer', type: '3 BHK' }, session: { id: 'S-1', persona: 'Quiet minimalist' } }) })
+  ok(lk.body.project?.crmId === 'PR-009' && lk.body.project.rooms.length > 0 && lk.body.project.style === 'minimalism', 'Accord project linked to the engine, style from the experience')
+  ok((await fetch(B + '/files/CRM_Test_Data/db.json')).status === 403, 'test CRM data is never served as a file')
   const bad = await fetch(B + '/api/vendors', { method: 'POST', headers: { origin: 'https://evil.example', 'content-type': 'application/json' }, body: '{"name":"x"}' }); ok(bad.status === 403, 'other websites are refused')
 } catch (e) { ok(false, 'error: ' + e.message); console.log(out) }
 console.log(failed ? `\n${failed} check(s) failed` : '\nall checks passed')

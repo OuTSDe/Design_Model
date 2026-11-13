@@ -16,6 +16,7 @@ import os from 'node:os'
 import XLSX from 'xlsx'
 import { STYLES, briefFor, styleMdFor, roomsFor } from './seed.mjs'
 import { createAssets } from './assets.mjs'
+import { createCrm } from './crm.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const APP = path.resolve(HERE, '..')
@@ -332,15 +333,26 @@ function runJob(job) {
   const add = (d) => { job.log = (job.log + d.toString()).slice(-60000) }
   p.stdout.on('data', add); p.stderr.on('data', add)
   p.on('error', (e) => add('\n' + e.message))
+  // Codex that exits at once (not installed, not logged in) closes its input early: note it on the job, never crash the engine
+  p.stdin.on('error', (e) => add('\n[engine] could not send the prompt to Codex: ' + e.code))
   if (stdin) { p.stdin.write(job.prompt); p.stdin.end() }
   const t = setTimeout(() => { add('\n[engine] timed out'); p.kill() }, (CFG.codex.timeoutMinutes || 20) * 60000)
   p.on('close', (code) => { clearTimeout(t); running.delete(job.id)
     if (local) { try { const n = copyBack(cwd, src, started); add(`\n[engine] copied ${n} file(s) back to ${job.cwd}`); fs.rmSync(cwd, { recursive: true, force: true }) } catch (e) { add('\n[engine] copy back failed: ' + e.message + ' (the files are still in ' + cwd + ')') } }
     const outOk = !job.output || fs.existsSync(path.join(src, job.output))
+    if (job.cancelReq) return finish(job, 'cancelled', '\n[engine] cancelled by the team')
     finish(job, code === 0 && outOk ? 'done' : 'failed', code === 0 && !outOk ? `\n[engine] Codex finished but ${job.output} was not written.` : '') })
+}
+// stop a running job: the whole process tree (on Windows the shell's child codex.exe too); it ends as cancelled, not retried
+function killJob(job) {
+  const p = running.get(job.id); if (!p) return false
+  job.cancelReq = true
+  if (process.platform === 'win32' && p.pid) { try { spawn('taskkill', ['/pid', String(p.pid), '/T', '/F'], { shell: false }) } catch { p.kill() } } else p.kill()
+  return true
 }
 function finish(job, status, extra = '') {
   job.status = status; job.finishedAt = now(); job.log += extra
+  if (status === 'cancelled') { try { fs.writeFileSync(path.join(DIR.state, 'jobs', job.id, 'log.txt'), job.log) } catch { /* */ } saveJobs(); pump(); return }
   if (status === 'failed' && LIMIT.test(job.log.slice(-3000))) { // not the job's fault: put it back and pause the queue
     pausedUntil = Math.max(pausedUntil, limitTime(job.log.slice(-3000))); pauseReason = 'Codex usage limit'
     job.status = 'queued'; job.log += `\n[engine] Codex usage limit: queue paused until ${new Date(pausedUntil).toLocaleString('en-IN')}; this job will run again then.`
@@ -398,6 +410,8 @@ const SERVER = HOST !== '127.0.0.1' && HOST !== 'localhost'
 const KEYF = path.join(DIR.state, 'access-key.txt')
 if (!CFG.accessKey && fs.existsSync(KEYF)) CFG.accessKey = fs.readFileSync(KEYF, 'utf8').trim()
 if (SERVER && !CFG.accessKey) { CFG.accessKey = Array.from({ length: 4 }, () => Math.random().toString(36).slice(2, 6)).join('-'); ensure(DIR.state); fs.writeFileSync(KEYF, CFG.accessKey) }
+const cookieOf = (req, k) => decodeURIComponent((String(req.headers.cookie || '').split(/;\s*/).find((x) => x.startsWith(k + '=')) || '').slice(k.length + 1))
+let crmLink = null // set below, once the routes exist
 const isLocal = (req) => ['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(req.socket.remoteAddress) && !req.headers['x-forwarded-for'] && !req.headers['tailscale-user-login']
 const sameOrigin = (req, o) => { try { return new URL(o).host === req.headers.host } catch { return false } }
 app.use((req, res, next) => {
@@ -408,11 +422,13 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Private-Network', 'true') // Chrome: a public page (GitHub Pages) calling this PC
   } else if (o && req.path.startsWith('/api') && req.method !== 'GET') return res.status(403).json({ error: `This page (${o}) is not allowed to use the engine. Add it to allowedOrigins in engine/config.json.` })
   if (req.method === 'OPTIONS') return res.sendStatus(o && (ORIGINS.has(o) || sameOrigin(req, o)) ? 204 : 403)
-  // access key for everyone who is not on this laptop (the built UI itself, /index.html and /assets, stays open so the login screen loads)
-  if (CFG.accessKey && !isLocal(req) && (req.path.startsWith('/api') || req.path.startsWith('/files'))) {
-    const k = req.headers['x-engine-key'] || req.query.k
-    if (k !== CFG.accessKey) return res.status(401).json({ error: 'Access key needed', needKey: true })
-  }
+  // the test CRM's own data (accounts, client files) is never served as a plain file
+  if (/^\/files\/(CRM_Test_Data|\.engine)(\/|$)/i.test(decodeURIComponent(req.path))) return res.status(403).send('Not served')
+  // access key for everyone who is not on this laptop (the built UI itself, /index.html and /assets, stays open so the login screen loads).
+  // The key comes as a header, ?k= or the de_k cookie (set by the Connect screen); someone signed in to the test CRM on this server also counts.
+  const k = req.headers['x-engine-key'] || req.query.k || cookieOf(req, 'de_k')
+  req.engineOk = !CFG.accessKey || isLocal(req) || k === CFG.accessKey || !!crmLink?.userOf(req)
+  if (!req.engineOk && (req.path.startsWith('/api') || req.path.startsWith('/files'))) return res.status(401).json({ error: 'Access key needed', needKey: true })
   next()
 })
 app.use(express.json({ limit: '4mb' }))
@@ -421,7 +437,7 @@ const h = (fn) => async (req, res) => { try { const v = await fn(req, res); if (
 
 app.use('/files', express.static(ROOT, { dotfiles: 'deny', index: false }))
 
-app.get('/api/health', h(async () => ({ engine: '0.5.0', root: ROOT, codexCommand: `${CFG.codex.bin} ${CFG.codex.args.join(' ')} ${CFG.codex.imageFlag} <image> … ${CFG.codex.promptFromStdin !== false ? '-' : '"<prompt>"'}`, export: fs.existsSync(EXPORT) ? EXPORT : null, codex: await codexCheck(), jobs: { running: running.size, queued: jobs.filter((j) => j.status === 'queued').length } })))
+app.get('/api/health', h(async () => ({ engine: '0.6.0', root: ROOT, codexCommand: `${CFG.codex.bin} ${CFG.codex.args.join(' ')} ${CFG.codex.imageFlag} <image> … ${CFG.codex.promptFromStdin !== false ? '-' : '"<prompt>"'}`, export: fs.existsSync(EXPORT) ? EXPORT : null, codex: await codexCheck(), jobs: { running: running.size, queued: jobs.filter((j) => j.status === 'queued').length } })))
 
 app.get('/api/accord', h(() => {
   const a = readAccord(); const projects = listProjects()
@@ -502,7 +518,20 @@ app.post('/api/jobs/:id/rerun', h((req) => { const o = jobs.find((x) => x.id ===
   j.rerunOf = o.id; jobs.unshift(j); saveJobs(); pump(); return j }))
 app.post('/api/queue/resume', h(() => { pausedUntil = 0; pauseReason = ''; pump(); return { ok: true } }))
 app.post('/api/jobs/:id/cancel', h((req) => { const j = jobs.find((x) => x.id === req.params.id); if (!j) throw new Error('Job not found')
-  if (j.status === 'queued') { j.status = 'cancelled'; saveJobs() } else if (running.get(j.id)) running.get(j.id).kill(); return { ok: true } }))
+  if (j.status === 'queued') { j.status = 'cancelled'; j.finishedAt = now(); saveJobs() } else killJob(j); return { ok: true } }))
+// clear the Codex queue: every waiting job is cancelled; with {running:true} the running ones are stopped too
+app.post('/api/queue/clear', h((req) => {
+  let waiting = 0, stopped = 0
+  for (const j of jobs) { if (j.status === 'queued') { j.status = 'cancelled'; j.finishedAt = now(); j.log = (j.log || '') + '\n[engine] removed from the queue'; waiting++ } else if (req.body?.running && j.status === 'running' && killJob(j)) stopped++ }
+  pausedUntil = 0; pauseReason = ''; saveJobs(); return { waiting, stopped }
+}))
+// delete job records (not waiting or running ones): one, or all finished ones of the given statuses
+const dropJob = (j) => { try { fs.rmSync(path.join(DIR.state, 'jobs', j.id), { recursive: true, force: true }) } catch { /* */ } }
+app.delete('/api/jobs/:id', h((req) => { const j = jobs.find((x) => x.id === req.params.id); if (!j) throw new Error('Job not found')
+  if (['queued', 'running'].includes(j.status)) throw new Error('Cancel the job first'); jobs = jobs.filter((x) => x !== j); dropJob(j); saveJobs(); return { ok: true } }))
+app.post('/api/jobs-clear', h((req) => { const st = req.body?.statuses || ['done', 'failed', 'cancelled']
+  const gone = jobs.filter((j) => st.includes(j.status) && !['queued', 'running'].includes(j.status)); gone.forEach(dropJob)
+  jobs = jobs.filter((j) => !gone.includes(j)); saveJobs(); return { removed: gone.length } }))
 
 // Codex fills a style's render and mood-board references (one style, or every style with { all: true })
 app.post('/api/vocabulary-find', h((req) => {
@@ -529,6 +558,9 @@ app.post('/api/pipeline', h((req) => { const { projectId, roomId, from = PIPELIN
   if (!steps.length) throw new Error('Nothing to run')
   const j = buildJob(steps[0], { projectId, roomId, then: steps.slice(1) }); jobs.unshift(j); saveJobs(); pump(); return { ...j, steps, project: pr?.name } }))
 
+// the test copy of Accord CRM on this server, and the link between Accord Design and the engine (engine/crm.mjs)
+crmLink = createCrm({ app, express, ROOT, readJson, writeJson, ensure, safe, slug, now, h, fileUrl, A, readAccord, listProjects, hydrate, saveProject, projDir, roomFolders, roomsFor, STYLES })
+
 // Update and restart: dev.mjs copies the latest code from Design_Model\app and starts the engine again (exit code 75).
 // with { wait: true } the engine stops starting new jobs, waits for the running ones, then restarts; the queue carries on afterwards.
 app.post('/api/restart', h((req) => {
@@ -538,7 +570,7 @@ app.post('/api/restart', h((req) => {
 
 // built UI (npm start)
 const DIST = path.join(APP, 'dist')
-if (process.argv.includes('--serve') && fs.existsSync(DIST)) { app.use(express.static(DIST)); app.get(/^\/(?!api|files).*/, (_, res) => res.sendFile(path.join(DIST, 'index.html'))) }
+if (process.argv.includes('--serve') && fs.existsSync(DIST)) { app.use(express.static(DIST)); app.get(/^\/(?!api|files|crm)/, (_, res) => res.sendFile(path.join(DIST, 'index.html'))) }
 
 // Autorun: a plan file in Design_Model/.engine/autorun.json is queued when the engine starts, then renamed to autorun.done-<time>.json.
 // { "tasks": [ { "kind": "style-references" | "style-brief", "all": true } | { "kind": "pipeline", "projectId": "", "roomId": "", "steps": [] } ] }

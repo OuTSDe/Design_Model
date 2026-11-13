@@ -6,7 +6,9 @@
 const read = (k) => { try { return localStorage.getItem(k) || '' } catch { return '' } }
 export const ENGINE = (read('de.engine') || import.meta.env.VITE_ENGINE_URL || '').replace(/\/$/, '')
 export const KEY = read('de.key')
-export function connect(engine, key) { try { localStorage.setItem('de.engine', (engine || '').trim().replace(/\/$/, '')); localStorage.setItem('de.key', (key || '').trim()) } catch { /* */ } location.reload() }
+export function connect(engine, key) { try { localStorage.setItem('de.engine', (engine || '').trim().replace(/\/$/, '')); localStorage.setItem('de.key', (key || '').trim()) } catch { /* */ }
+  // the same key as a cookie, so images and the test CRM on this server load on other devices too
+  try { document.cookie = 'de_k=' + encodeURIComponent((key || '').trim()) + '; path=/; max-age=' + (key ? 31536000 : 0) + '; samesite=lax' } catch { /* */ } location.reload() }
 const withKey = (u) => (KEY ? u + (u.includes('?') ? '&' : '?') + 'k=' + encodeURIComponent(KEY) : u)
 // engine answers contain '/files/…' links; point them at the engine and add the key
 export const fix = (v) => typeof v === 'string' ? (v.startsWith('/files/') ? withKey(ENGINE + v) : v) : Array.isArray(v) ? v.map(fix) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, fix(x)])) : v

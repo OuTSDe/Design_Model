@@ -122,7 +122,7 @@ export function createAssets(ctx) {
     ensure(DIR.vendors)
     return fs.readdirSync(DIR.vendors, { withFileTypes: true }).filter((e) => e.isDirectory() && !e.name.startsWith('_')).map((e) => readJson(path.join(DIR.vendors, e.name, 'vendor.json'))).filter(Boolean)
   }
-  const VENDOR_KEYS = ['name', 'city', 'area', 'address', 'state', 'website', 'instagram', 'contact_person', 'phone', 'email', 'categories', 'styles', 'price_band', 'gst', 'delivery', 'showroom', 'notes', 'rating', 'map_url']
+  const VENDOR_KEYS = ['name', 'city', 'area', 'address', 'state', 'website', 'instagram', 'contact_person', 'phone', 'email', 'categories', 'styles', 'price_band', 'gst', 'delivery', 'showroom', 'notes', 'rating', 'map_url', 'crm_id', 'crm_status']
   function saveVendor(body, id) {
     const vid = id || slug(body.name); if (!vid) throw new Error('Give the vendor a name')
     const f = path.join(DIR.vendors, vid, 'vendor.json'); const old = readJson(f) || {}
