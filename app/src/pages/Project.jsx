@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 import { Page, Card, Button, Badge, Seg, Field, Input, Textarea, Select, KV, Stat, useLoad, useNotify, dt } from '../components/ui.jsx'
 import { api, roomUrl } from '../api.js'
 import ImageDrop from '../components/ImageDrop.jsx'
+import { EMBED, toCrm } from '../embed.js'
 
 const STATUS = ['Brief', 'References', 'Mood boards', 'Rendering', 'Review', 'Approved', 'On hold']
 const styleOptions = (vocab) => (vocab || []).map((s) => ({ value: s.id, label: `${s.parent ? '— ' : ''}${s.name} · Cat ${s.category}` }))
@@ -28,7 +29,7 @@ export default function Project() {
   const js = jobs.data || []
   return <Page back="/projects" title={p.name}
     subtitle={`${p.client} · ${p.type} · ${p.area ? p.area + ' sft · ' : ''}floor ${p.floor}${p.band ? ' · ' + p.band : ''}`}
-    actions={<Seg options={[{ value: 'rooms', label: 'Rooms' }, { value: 'brief', label: 'Brief' }, { value: 'client', label: 'Client and residence' }]} value={tab} onChange={setTab} />}>
+    actions={<>{p.crmId && <Button size="sm" onClick={() => (EMBED ? toCrm('/accord/' + p.crmId) : window.open('/crm/#/accord/' + p.crmId, '_blank'))}>Open in Accord · BOQ</Button>}<Seg options={[{ value: 'rooms', label: 'Rooms' }, { value: 'brief', label: 'Brief' }, { value: 'client', label: 'Client and residence' }]} value={tab} onChange={setTab} /></>}>
     <div className="stats g5" style={{ display: 'grid' }}>
       <Stat long label="Persona" value={p.persona || '–'} sub={p.palette || (p.sessionScreen ? 'Experience stopped at ' + p.sessionScreen : 'No experience session')} tone={p.persona ? 'good' : 'warn'} />
       <Stat long label="Residence style" value={styleName(p.style) || "–"} sub="Rooms can override it" tone="accent" />

@@ -52,7 +52,7 @@ const run = (name, args) => {
   const tag = (d) => d.toString().split(/\r?\n/).filter(Boolean).forEach((l) => log(`[${name}] ${l}`))
   p.stdout.on('data', tag); p.stderr.on('data', tag)
   p.on('exit', (c) => {
-    if (name === 'engine' && c === 75) { try { syncFromDrive(); log('Updated from Design_Model\\app.'); if (process.argv.includes('--server')) buildUI() } catch (e) { log('Update failed: ' + e.stack) } return run('engine', args) }
+    if (name === 'engine' && c === 75) { try { syncFromDrive(); log('Updated from Design_Model\\app.'); buildUI() } catch (e) { log('Update failed: ' + e.stack) } return run('engine', args) }
     log(`[${name}] stopped (${c})`)
     // the engine crashed: keep the UI up and try again a few times (a fix in Drive is picked up on each try)
     if (name === 'engine' && crashes++ < 5) { setTimeout(() => { try { syncFromDrive() } catch { /* */ } run('engine', args) }, 5000); return }
@@ -69,7 +69,9 @@ if (SERVER) {
   log('Server mode: building the UI…'); buildUI()
   run('engine', ['engine/server.mjs', '--serve'])
 } else {
-  run('engine', ['engine/server.mjs'])
+  // the engine also serves the built screens, so the test CRM (<engine>/crm/) can show them inside Accord Design
+  log('Building the UI for the engine…'); buildUI()
+  run('engine', ['engine/server.mjs', '--serve'])
   run('ui', [path.join('node_modules', 'vite', 'bin', 'vite.js')])
 }
 process.on('SIGINT', () => { kids.forEach((k) => k.kill()); process.exit(0) })

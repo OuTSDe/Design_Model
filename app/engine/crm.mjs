@@ -240,5 +240,16 @@ window.ACCORD_CONFIG = { backendUrl: location.origin + '/crm-api', testBackend: 
   // engine vendors (with their library size) for the CRM: the ones Codex found that are not in the directory yet come back for review
   app.get('/api/crm/vendors', h(() => A.listVendors().map((v) => ({ id: v.id, name: v.name, city: v.city || '', area: v.area || '', website: v.website || '', categories: v.categories || [], crm_id: v.crm_id || '', price_band: v.price_band || '' }))))
 
-  return { engineAuth, userOf: (req) => userOf(cookie(req, 'crm_t')), isTestPath: (p) => p === '/crm-api' || p.startsWith('/crm/') || p === '/crm' || p.startsWith('/crm-file/') }
+  // the test CRM's bookings and sessions in the same shape as the Accord export (designer view: no money, no contact details)
+  function accord() {
+    if (empty() || !list('clients').length) return null
+    const units = Object.fromEntries(list('units').map((u) => [String(u.unit), u]))
+    const clients = list('clients').filter((c) => c.bookingId && c.unit).map((c) => { const u = units[String(c.unit)] || {}
+      return { bookingId: c.bookingId, clientId: c.clientId, unit: String(c.unit), title: c.title || '', name: c.name || '', status: c.status || '', owner: c.owner || '', occupant: c.occupant || '', familyProfile: c.familyProfile || '',
+        purpose: c.purpose || '', type: u.type || c.config || '', area: u.area || c.area || '', floor: u.floor ?? Math.floor(Number(c.unit) / 100), pos: u.pos || '', band: u.band || '' } }).sort((a, b) => Number(a.unit) - Number(b.unit))
+    const sessions = list('accordSessions').filter((x) => x.id).map((x) => ({ id: x.id, buyer: x.buyer, unitRef: x.unitRef, recordId: x.recordId, residence: x.residence, persona: x.persona || '', palette: x.palette || '', register: x.register || '',
+      coherence: x.coherence ?? '', configId: x.configId || '', screen: x.screen || '', by: x.by || '', unit: x.unit || '', floor: x.floor || '', updatedAt: x.updatedAt || x.startedAt || '' }))
+    return { ok: true, path: 'Design_Model/CRM_Test_Data (test CRM)', exportedAt: now(), clients, sessions }
+  }
+  return { accord, engineAuth, userOf: (req) => userOf(cookie(req, 'crm_t')), isTestPath: (p) => p === '/crm-api' || p.startsWith('/crm/') || p === '/crm' || p.startsWith('/crm-file/') }
 }

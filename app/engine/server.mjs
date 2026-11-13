@@ -76,7 +76,9 @@ function sheetRows(wb, name) {
     if (o._extra) { try { Object.assign(o, JSON.parse(o._extra)) } catch { /* */ } delete o._extra }
     return o })
 }
-function readAccord() {
+// the bookings and experience sessions a designer may see: from the test CRM on this server when it has data, else from the Accord export
+const readAccord = () => crmLink?.accord() || readAccordExport()
+function readAccordExport() {
   let st; try { st = fs.statSync(EXPORT) } catch { return { ok: false, path: EXPORT, error: 'Accord export not found. Check accordExport in engine/config.json.', clients: [], sessions: [] } }
   if (accordCache.data && accordCache.mtime === st.mtimeMs) return accordCache.data
   const wb = XLSX.read(fs.readFileSync(EXPORT), { type: 'buffer' })
@@ -559,7 +561,7 @@ app.post('/api/pipeline', h((req) => { const { projectId, roomId, from = PIPELIN
   const j = buildJob(steps[0], { projectId, roomId, then: steps.slice(1) }); jobs.unshift(j); saveJobs(); pump(); return { ...j, steps, project: pr?.name } }))
 
 // the test copy of Accord CRM on this server, and the link between Accord Design and the engine (engine/crm.mjs)
-crmLink = createCrm({ app, express, ROOT, readJson, writeJson, ensure, safe, slug, now, h, fileUrl, A, readAccord, listProjects, hydrate, saveProject, projDir, roomFolders, roomsFor, STYLES })
+crmLink = createCrm({ app, express, ROOT, readJson, writeJson, ensure, safe, slug, now, h, fileUrl, A, readAccord: readAccordExport, listProjects, hydrate, saveProject, projDir, roomFolders, roomsFor, STYLES })
 
 // Update and restart: dev.mjs copies the latest code from Design_Model\app and starts the engine again (exit code 75).
 // with { wait: true } the engine stops starting new jobs, waits for the running ones, then restarts; the queue carries on afterwards.

@@ -78,3 +78,7 @@
   .btn, .chip, .tab, .seg button, .tree-row, .room-btn { min-height: 40px }
 }
 body { padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); -webkit-tap-highlight-color: transparent }
+
+/* inside Accord (CRM): no shell of our own, the CRM's header and side panel are around us */
+.embedded { min-height: 100vh; background: var(--bg) }
+.embedded > .content { margin: 0 auto }

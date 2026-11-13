@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useLoad } from './ui.jsx'
 import Connect from './Connect.jsx'
+import { EMBED, routeToCrm, initialTheme } from '../embed.js'
 
 const NAV = [
   { label: 'Design engine', items: [['/', 'Overview', '01', true], ['/projects', 'Projects', '02'], ['/vocabulary', 'Space vocabulary', '03'], ['/jobs', 'Codex jobs', '04']] },
@@ -11,14 +12,18 @@ const NAV = [
 ]
 export default function Layout() {
   const [col, setCol] = useState(() => localStorage.getItem('de.side') === '1')
-  const [theme, setTheme] = useState(() => localStorage.getItem('de.theme') || 'dark')
+  const [theme, setTheme] = useState(() => (EMBED && initialTheme()) || localStorage.getItem('de.theme') || 'dark')
   const loc = useLocation()
   const health = useLoad('/api/health', 15000)
-  useEffect(() => { document.documentElement.dataset.theme = theme; localStorage.setItem('de.theme', theme) }, [theme])
+  useEffect(() => { document.documentElement.dataset.theme = theme; if (!EMBED) localStorage.setItem('de.theme', theme) }, [theme])
+  // inside Accord: follow its theme, and tell it where we are so its side panel and address stay in step
+  useEffect(() => { if (!EMBED) return; const on = (e) => { if (e.data?.type === 'de-theme') setTheme(e.data.theme) }; window.addEventListener('message', on); return () => window.removeEventListener('message', on) }, [])
+  useEffect(() => { if (EMBED) routeToCrm(loc.pathname) }, [loc.pathname])
   useEffect(() => { localStorage.setItem('de.side', col ? '1' : '0') }, [col])
   const crumb = NAV.flatMap((g) => g.items).find(([to, , , end]) => (end ? loc.pathname === to : loc.pathname.startsWith(to)))?.[1] || 'Design engine'
   const h = health.data
   const sync = health.error ? ['s-error', 'Engine offline'] : !h ? ['', 'Connecting'] : h.jobs.running ? ['s-syncing', 'Codex running'] : ['s-synced', 'Engine ready']
+  if (EMBED) return <div className="embedded">{health.error ? <Connect error={health.error} needKey={health.needKey} /> : <Outlet />}</div>
   return <div className={'shell' + (col ? ' collapsed' : '')}>
     <aside className="side">
       <div className="brand" onClick={() => setCol(!col)} title="Collapse the side panel"><div className="mark">A</div><div><div className="brand-name">Accord</div><div className="brand-sub">Design engine</div></div></div>

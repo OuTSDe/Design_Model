@@ -2,6 +2,7 @@
 import React, { useEffect, useState, createContext, useContext, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { engineUrl, fix, headers, ENGINE } from '../api.js'
+import { EMBED, toastToCrm } from '../embed.js'
 
 export const cx = (...a) => a.filter(Boolean).join(' ')
 export function Page({ title, subtitle, actions, back, children }) {
@@ -34,7 +35,7 @@ export const KV = ({ rows }) => <div>{rows.filter(Boolean).map(([k, v]) => <div 
 const ToastCtx = createContext(() => {})
 export function ToastHost({ children }) {
   const [t, setT] = useState(null)
-  const notify = useCallback((msg, tone) => { setT({ msg, tone, k: Date.now() }) }, [])
+  const notify = useCallback((msg, tone) => { if (EMBED) return toastToCrm(msg, tone); setT({ msg, tone, k: Date.now() }) }, [])
   useEffect(() => { if (!t) return; const x = setTimeout(() => setT(null), 3600); return () => clearTimeout(x) }, [t])
   return <ToastCtx.Provider value={notify}>{children}{t && <div className={cx('toast', t.tone && 't-' + t.tone)} key={t.k}>{t.msg}</div>}</ToastCtx.Provider>
 }

@@ -3,11 +3,13 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Page, Card, Button, Badge, Stat, Modal, Select, Field, useLoad, useNotify, d } from '../components/ui.jsx'
 import { api } from '../api.js'
+import { EMBED, toCrm } from '../embed.js'
 
 export const sessionLine = (s) => s ? ([s.persona, s.palette, s.register].filter(Boolean).join(' · ') || `Stopped at ${s.screen || 'the start'}`) : 'No experience session'
 export function useStart() {
   const nav = useNavigate(); const notify = useNotify(); const [busy, setBusy] = useState(false)
-  const start = async (bookingId) => { setBusy(true); try { const p = await api.post('/api/projects', { bookingId }); nav('/projects/' + encodeURIComponent(p.id)) } catch (e) { notify(e.message, 'bad') } setBusy(false) }
+  const start = async (bookingId) => { if (EMBED) return toCrm('/accord?start=' + encodeURIComponent(bookingId)) // inside Accord the project is made there, then sent here
+    setBusy(true); try { const p = await api.post('/api/projects', { bookingId }); nav('/projects/' + encodeURIComponent(p.id)) } catch (e) { notify(e.message, 'bad') } setBusy(false) }
   return [start, busy]
 }
 
@@ -19,7 +21,7 @@ export default function Overview() {
   const clients = acc.data?.clients || []
   const ready = clients.filter((c) => c.sessions.length && !c.projectId && !['Cancelled', 'Transferred'].includes(c.status))
   const ps = projects.data || [], js = jobs.data || []
-  return <Page title={<>Design <em>engine</em></>} subtitle="From the client's design brief to a render of every room: principal references, expanded references, the asset library, mood boards, the blank view and Codex. A separate build; it joins Accord Design after approval.">
+  return <Page title={<>Design <em>engine</em></>} subtitle={"From the client's design brief to a render of every room: principal references, expanded references, the asset library, mood boards, the blank view and Codex." + (EMBED ? '' : ' A separate build; it joins Accord Design after approval.')}>
     <div className="stats g4" style={{ display: 'grid' }}>
       <Stat label="Ready for design" value={ready.length} sub="Experience done, no project yet" tone="accent" />
       <Stat label="Projects" value={ps.length} sub={`${ps.reduce((s, p) => s + p.roomCount, 0)} rooms`} tone="good" onClick={() => nav('/projects')} />
@@ -31,7 +33,7 @@ export default function Overview() {
     {sum.data && (sum.data.counts.running || sum.data.counts.queued) ? <Card title="Codex queue" actions={<><span className="small muted">{sum.data.counts.running || 0} running · {sum.data.counts.queued || 0} waiting · {sum.data.counts.done || 0} done · {sum.data.counts.failed || 0} failed</span>{sum.data.counts.queued ? <Button size="sm" variant="ghost" onClick={() => confirm(`Remove all ${sum.data.counts.queued} waiting job(s) from the Codex queue?`) && api.post('/api/queue/clear', {}).then(sum.reload)}>Clear queue</Button> : null}<Button size="sm" variant="ghost" onClick={() => nav('/jobs')}>Manage</Button></>}>
       {sum.data.active.map((a) => <div key={a.id} className="check-row"><span><Badge tone="warn">running</Badge> <b>{a.label}</b> <span className="small muted">{a.project ? `${a.project} · ${a.room}` : ''}</span></span><span className="small muted">since {new Date(a.startedAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</span></div>)}
       <div className="hint" style={{ marginTop: 8 }}>Keep the Design Engine window open while Codex works. If it is closed, the interrupted jobs start again on the next launch.</div></Card> : null}
-    <Card title={`Ready for design · ${ready.length}`} actions={<><span className="small muted">From the Accord export of {d(acc.data?.exportedAt)}</span><Button size="sm" onClick={() => setPick('')}>Start for another booking</Button></>}>
+    <Card title={`Ready for design · ${ready.length}`} actions={<><span className="small muted">{/test CRM/.test(acc.data?.path || '') ? 'Bookings and experience sessions in Accord' : `From the Accord export of ${d(acc.data?.exportedAt)}`}</span><Button size="sm" onClick={() => setPick('')}>Start for another booking</Button></>}>
       {!ready.length && <div className="empty">{acc.loading ? 'Reading the Accord export…' : 'No buyer is waiting. Everyone who has done the Accord experience already has a project.'}</div>}
       {ready.map((c) => { const s = c.sessions[0]
         return <div key={c.bookingId} className="check-row"><span><b>{c.unit}</b> · {c.title} {c.name} <span className="small muted">· {c.type} · {sessionLine(s)}</span></span>
