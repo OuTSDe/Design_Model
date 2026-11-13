@@ -70,3 +70,11 @@
 .chip.on { border-color: var(--m-accord); color: var(--fg); background: var(--good-soft) }
 .modal.modal-wide { width: min(980px, 94vw) }
 @media (max-width: 900px) { .lib-layout { grid-template-columns: 1fr } .lib-layout > .card { position: static; max-height: none } }
+
+/* iPad / touch: no hover, so show controls; 16px inputs stop Safari zooming; respect the notch/home bar */
+@media (hover: none) {
+  .thumb-x, .slot-img .thumb-x { opacity: 1 }
+  input, select, textarea { font-size: 16px }
+  .btn, .chip, .tab, .seg button, .tree-row, .room-btn { min-height: 40px }
+}
+body { padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); -webkit-tap-highlight-color: transparent }

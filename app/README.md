@@ -72,3 +72,12 @@ Run Codex and the data on ONE laptop, and let everyone else use it from theirs.
 **From outside the office, or from the GitHub page:** a public https page (GitHub Pages) is not allowed to call a plain `http://192.168…` address. Use [Tailscale](https://tailscale.com) (free for small teams, private to your team):
 install it on the server laptop and on each team laptop, sign in with the same account, then on the server run `tailscale serve --bg 4317`.
 It prints an https address like `https://design-server.tail1234.ts.net`. On the GitHub page (or anywhere), Connect → Engine address: that https address, Access key: the key.
+
+## Using it on an iPad
+
+The iPad is a client, not the server: iPadOS can't run Node or the Codex CLI. The engine and Codex stay on the server laptop, and everything saves to the Drive.
+
+- **Same Wi-Fi:** open the Team address (`http://<laptop-ip>:4317`) in Safari and enter the access key once.
+- **Anywhere else:** install the Tailscale app on the iPad (same account as the server laptop) and open the `https://…ts.net` address. Use this https address with the GitHub page too, because Safari blocks an https page from calling an `http://` address.
+- **Install as an app:** in Safari, tap Share → **Add to Home Screen**. It opens full screen like an app. Enter the key once more inside the installed app; it keeps its own storage.
+- Uploads from the iPad (Photos or Camera) go to the server and are saved in the Drive. Delete buttons on images are always visible on touch screens.
